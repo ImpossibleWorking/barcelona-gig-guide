@@ -17,14 +17,30 @@ const BARCELONA_ORGANIZER_IDS: string[] = [
   // Jazz, live rooms & bars
   "50358669263", // Velvet Room Bcn
   "96768207773", // Ocaña en Vivo
+  "73677133853", // Aclam Club
+  "115618506621", // El Duende by Tablao Cordobes
+  "58869923893", // BYRON Live Concerts
+  "26919582185", // MUV Banda (Marula Café)
   // Comedy
   "58689016343", // The Comedy Clubhouse BCN
   "60403957483", // Secret Comedy Club
+  "18236694475", // Barcelona Comedy Club
+  "38120356583", // Massa Comedy
+  "20095681930", // Lluís Vendrell Comedy
+  "65343604653", // Hector Ayala (Basemint / Uranus)
+  "76451167103", // TBC Improv Spain
+  "56880907563", // Barcelona Improv Group
+  "76630050583", // Jokes & Beers
   // Clubs & promoters
   "112953763081", // VICE UNIVERSE
   "121158035775", // Colors Club
   "120903321167", // Lyli Events (Island Beats / live parties)
   "121222963107", // Resonancia Entertainment (concerts & festivals)
+  "16669209352", // STUDIO 54 BARCELONA
+  "17539819258", // Jackies (La Terrrazza / house)
+  "71143058633", // Fury (hard techno)
+  "69001874533", // Moods (W Barcelona Noxe)
+  "89901525123", // RUMBON Latin Party
 ];
 
 const EVENTBRITE_BASE_URL = "https://www.eventbriteapi.com/v3";
