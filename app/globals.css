@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --background: #070b0d;
+  --foreground: #f4f4f5;
+  --surface: #0e1518;
+  --surface-raised: #152022;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #2dd4bf;
+  --accent-hover: #5eead4;
+  --accent-muted: rgba(45, 212, 191, 0.14);
+  --muted: #a1a1aa;
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-display {
+    font-family: var(--font-bebas), var(--font-geist-sans), sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  .bg-brand-gradient {
+    background:
+      radial-gradient(ellipse 70% 50% at 85% 0%, rgba(45, 212, 191, 0.12), transparent),
+      radial-gradient(ellipse 50% 40% at 0% 100%, rgba(14, 165, 233, 0.06), transparent),
+      var(--background);
+  }
+}
+
+@layer components {
+  .brand-input {
+    @apply mt-1 block w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-zinc-500 transition focus:border-teal-400/50 focus:outline-none focus:ring-2 focus:ring-teal-400/20;
+  }
+
+  .brand-panel {
+    @apply rounded-xl shadow-xl shadow-black/20 backdrop-blur-sm;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(21, 32, 34, 0.85);
+  }
+
+  .gig-map-marker {
+    background: transparent;
+    border: none;
+  }
+
+  .gig-map-marker-dot {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: var(--accent);
+    border: 2px solid rgba(8, 8, 10, 0.9);
+    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.35);
+  }
+
+  .leaflet-container {
+    background: #0e1518;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+
+  .leaflet-container img {
+    max-width: none !important;
+  }
+
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip {
+    background: #152022;
+    color: var(--foreground);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .gig-map-popup-title {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .gig-map-popup-meta {
+    margin: 0 0 0.25rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .gig-map-popup-link {
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .gig-map-popup-link:hover {
+    color: var(--accent-hover);
+  }
+}
