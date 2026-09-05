@@ -7,6 +7,7 @@ import { useI18n } from "@/components/I18nProvider";
 import FilterSidebar, { defaultFilters, hasActiveFilters, SortOption } from "./FilterSidebar";
 import EventGrid from "./EventGrid";
 import { toTimeZoneDateString } from "@/lib/datetime";
+import { collapseRecurringSeries } from "@/lib/recurring";
 
 function MapLoadingFallback() {
   const { t } = useI18n();
@@ -65,7 +66,9 @@ export default function EventsExplorer({ events }: { events: NormalizedEvent[] }
       return true;
     });
 
-    return filtered.sort((a, b) => {
+    const listed = collapseRecurringSeries(filtered);
+
+    return listed.sort((a, b) => {
       if (sort === "date") {
         return a.start_datetime.localeCompare(b.start_datetime);
       }

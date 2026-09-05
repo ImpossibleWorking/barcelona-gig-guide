@@ -261,6 +261,69 @@ export function getDemoEvents(): NormalizedEvent[] {
     },
   ];
 
+  for (let day = 0; day < 7; day++) {
+    events.push({
+      id: `demo_duende_${day}`,
+      source: "eventbrite",
+      source_url: "https://www.eventbrite.es/o/115618506621",
+      title: "Flamenco Show Barcelona El Duende by Tablao Cordobes",
+      description: "Intimate flamenco in Tablao Cordobes' new Rambla theatre.",
+      venue_name: "El Duende by Tablao Cordobes",
+      address: "La Rambla 33, 08002 Barcelona",
+      latitude: 41.3802,
+      longitude: 2.1738,
+      start_datetime: daysFromNow(day, 19, 0),
+      end_datetime: null,
+      price_min: 27,
+      price_max: 42,
+      is_free: false,
+      genre: "live-music",
+      image_url: null,
+      last_synced_at: syncedAt,
+    });
+  }
+
+  events.push(
+    {
+      id: "demo_clubhouse_comedy_next",
+      source: "eventbrite",
+      source_url: "https://www.eventbrite.es/o/the-comedy-clubhouse-bcn-58689016343",
+      title: "Friday Night Live — English Stand-Up",
+      description: "International comics at Barcelona's dedicated comedy club.",
+      venue_name: "The Comedy Clubhouse",
+      address: "Via Laietana, 08003 Barcelona",
+      latitude: 41.3856,
+      longitude: 2.1774,
+      start_datetime: daysFromNow(8, 21, 0),
+      end_datetime: null,
+      price_min: 12,
+      price_max: 18,
+      is_free: false,
+      genre: "comedy",
+      image_url: null,
+      last_synced_at: syncedAt,
+    },
+    {
+      id: "demo_jackies",
+      source: "eventbrite",
+      source_url: "https://www.eventbrite.es/o/jackies-17539819258",
+      title: "Jackies Open Air Daytime w/ Gerd Janson",
+      description: "Open-air house at La Terrrazza. Table packages sit far above general admission.",
+      venue_name: "La Terrrazza Barcelona",
+      address: "Poble Espanyol, 08038 Barcelona",
+      latitude: 41.3686,
+      longitude: 2.1481,
+      start_datetime: daysFromNow(4, 19, 0),
+      end_datetime: null,
+      price_min: 24.4,
+      price_max: 1108.9,
+      is_free: false,
+      genre: "clubbing",
+      image_url: null,
+      last_synced_at: syncedAt,
+    }
+  );
+
   return events.sort((a, b) => a.start_datetime.localeCompare(b.start_datetime));
 }
 
