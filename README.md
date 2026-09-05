@@ -13,6 +13,7 @@ Without API keys the site runs with sample listings so you can browse the UI imm
    - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — from your Supabase project's API settings
    - `SUPABASE_SERVICE_ROLE_KEY` — same page, used server-only by `/api/sync`
    - `CRON_SECRET` — any random string; optional locally, recommended in production
+   - `EVENTBRITE_AFFILIATE_BASE` / `TICKETMASTER_AFFILIATE_BASE` — optional Impact tracking bases ending in `?u=` so `/go/[id]` deep-links ticket pages. Ticketmaster requires joining their [global affiliate programme](https://developer.ticketmaster.com/partners/distribution-partners/affiliate-sign-up/) (Spain is included) via Impact first.
 3. **Eventbrite organizer IDs**: Eventbrite has no free-text location search, so `lib/sources/eventbrite.ts` queries a hardcoded list of Barcelona venues and promoters. Add more IDs there as you find them (`eventbrite.es/o/{slug}-{organizer_id}`).
 4. Run `npm install` then `npm run dev`, and open [http://localhost:3000](http://localhost:3000).
 

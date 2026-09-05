@@ -10,8 +10,22 @@ function isUsableAffiliateBase(base: string | undefined): base is string {
   return !/\b(YOUR_ID|AD_ID|CAMPAIGN_ID)\b/i.test(base);
 }
 
+function isAlreadyAffiliateWrapped(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return (
+      host.endsWith(".pxf.io") ||
+      host.endsWith(".evyy.net") ||
+      host.includes("impactradius") ||
+      host.includes("impact.com")
+    );
+  } catch {
+    return false;
+  }
+}
+
 function wrapWithAffiliateBase(url: string, base: string | undefined): string {
-  if (!isUsableAffiliateBase(base)) return url;
+  if (!isUsableAffiliateBase(base) || isAlreadyAffiliateWrapped(url)) return url;
   const trimmed = base.trim();
   if (trimmed.endsWith("=")) return `${trimmed}${encodeURIComponent(url)}`;
   const separator = trimmed.includes("?") ? "&u=" : "?u=";
@@ -34,9 +48,10 @@ export function getOutboundUrl(eventId: string, siteUrl = SITE_URL): string {
 export function buildAffiliateUrl(event: NormalizedEvent): string {
   switch (event.source) {
     case "ticketmaster":
-      // Discovery API URLs are affiliate-wrapped automatically when your Impact
-      // Publisher ID is linked in the Ticketmaster Developer Portal profile.
-      return event.source_url;
+      return wrapWithAffiliateBase(
+        event.source_url,
+        readEnv("TICKETMASTER_AFFILIATE_BASE", "NEXT_PUBLIC_TICKETMASTER_AFFILIATE_BASE")
+      );
     case "eventbrite":
       return wrapWithAffiliateBase(
         event.source_url,
