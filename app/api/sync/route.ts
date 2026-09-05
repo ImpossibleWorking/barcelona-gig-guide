@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { fetchEventbriteEvents } from "@/lib/sources/eventbrite";
+import { fetchOpenDataEvents } from "@/lib/sources/opendata";
 import { fetchTicketmasterEvents } from "@/lib/sources/ticketmaster";
 import { isGigRelevantEvent, normalizeForGigGuide } from "@/lib/gig-relevance";
 import { dedupeEvents } from "@/lib/dedupe";
@@ -127,6 +128,7 @@ export async function GET(request: NextRequest) {
 
     let eventbriteEvents: NormalizedEvent[] = [];
     let ticketmasterEvents: NormalizedEvent[] = [];
+    let openDataEvents: NormalizedEvent[] = [];
 
     if (process.env.EVENTBRITE_API_KEY) {
       try {
@@ -146,12 +148,34 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const combined = [...eventbriteEvents, ...ticketmasterEvents];
+    try {
+      openDataEvents = await fetchOpenDataEvents();
+      sourcesToClean.push("opendata");
+    } catch (error) {
+      console.error("Open Data BCN fetch failed:", error);
+    }
+
+    const combined = [...eventbriteEvents, ...ticketmasterEvents, ...openDataEvents];
     const gigEvents = combined
       .map((event) => normalizeForGigGuide(event))
       .filter((event): event is NormalizedEvent => event !== null);
     const deduped = dedupeEvents(gigEvents).map((event) => ({ ...event, last_synced_at: syncedAt }));
-    const upserted = await upsertEvents(deduped);
+    const ticketed = deduped.filter((event) => event.source !== "opendata");
+    const civic = deduped.filter((event) => event.source === "opendata");
+    const upsertedTicketed = await upsertEvents(ticketed);
+
+    let upsertedCivic = 0;
+    if (civic.length > 0) {
+      try {
+        upsertedCivic = await upsertEvents(civic);
+      } catch (error) {
+        console.error("Open Data BCN upsert failed (run supabase/migrations/005_add_opendata_source.sql):", error);
+        const opendataIndex = sourcesToClean.indexOf("opendata");
+        if (opendataIndex >= 0) sourcesToClean.splice(opendataIndex, 1);
+      }
+    }
+
+    const upserted = upsertedTicketed + upsertedCivic;
     const deletedPast = await deletePastEvents();
     const deletedDelisted = await deleteDelistedEvents(syncedAt, sourcesToClean);
     const deletedNonGig = await deleteNonGigEvents();
@@ -161,6 +185,7 @@ export async function GET(request: NextRequest) {
       fetched: {
         eventbrite: eventbriteEvents.length,
         ticketmaster: ticketmasterEvents.length,
+        opendata: openDataEvents.length,
       },
       deduped: deduped.length,
       upserted,

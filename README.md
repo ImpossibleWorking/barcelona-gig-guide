@@ -1,6 +1,6 @@
 # Barcelona Gig Guide
 
-Lists live music, clubbing, comedy, and festival events in Barcelona, aggregated from Eventbrite and Ticketmaster.
+Lists live music, clubbing, comedy, and festival events in Barcelona, aggregated from Eventbrite, Ticketmaster, and the Ajuntament de Barcelona cultural agenda.
 
 Without API keys the site runs with sample listings so you can browse the UI immediately.
 
@@ -19,11 +19,13 @@ Without API keys the site runs with sample listings so you can browse the UI imm
 
 ## Syncing events
 
-`GET /api/sync` fetches from Eventbrite and Ticketmaster, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it daily via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var).
+`GET /api/sync` fetches from Eventbrite, Ticketmaster, and the city open-data agenda, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it daily via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var).
+
+The city agenda needs no API key. After adding the `opendata` source, run [`supabase/migrations/005_add_opendata_source.sql`](supabase/migrations/005_add_opendata_source.sql) in the Supabase SQL editor if the project was created from an older schema.
 
 ## Structure
 
-- `lib/sources/eventbrite.ts`, `lib/sources/ticketmaster.ts` — fetch + normalize events from each API
+- `lib/sources/eventbrite.ts`, `lib/sources/ticketmaster.ts`, `lib/sources/opendata.ts` — fetch + normalize events from each source
 - `lib/geo.ts` — Barcelona metro bounding box, neighbourhoods, and venue hints
 - `app/api/sync/route.ts` — dedupes and upserts normalized events into Supabase
 - `app/page.tsx` — server-fetches upcoming events for a 90-day window

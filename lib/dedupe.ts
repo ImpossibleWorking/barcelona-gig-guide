@@ -43,6 +43,14 @@ export function pickPreferredDuplicate(a: NormalizedEvent, b: NormalizedEvent): 
   return richness(b) > richness(a) ? b : a;
 }
 
+function titleDateKey(event: NormalizedEvent): string {
+  return `${canonicalEventTitle(event.title)}|${toTimeZoneDateString(event.start_datetime)}`;
+}
+
+function isTicketedSource(event: NormalizedEvent): boolean {
+  return event.source === "eventbrite" || event.source === "ticketmaster";
+}
+
 /** Collapse the same show listed twice (cross-source, or Ticketmaster general vs VIP). */
 export function dedupeEvents(events: NormalizedEvent[]): NormalizedEvent[] {
   const byKey = new Map<string, NormalizedEvent>();
@@ -53,5 +61,14 @@ export function dedupeEvents(events: NormalizedEvent[]): NormalizedEvent[] {
     byKey.set(key, existing ? pickPreferredDuplicate(existing, event) : event);
   }
 
-  return Array.from(byKey.values());
+  const unique = Array.from(byKey.values());
+  const ticketedTitleDates = new Set(
+    unique.filter(isTicketedSource).map((event) => titleDateKey(event))
+  );
+
+  // City agenda rows often only have a neighbourhood. Drop them when a ticketed
+  // listing already covers the same title on the same night.
+  return unique.filter(
+    (event) => event.source !== "opendata" || !ticketedTitleDates.has(titleDateKey(event))
+  );
 }

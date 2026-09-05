@@ -3,7 +3,7 @@
 
 create table if not exists events (
   id text primary key, -- "{source}_{original_id}", e.g. "ticketmaster_12345"
-  source text not null check (source in ('eventbrite', 'ticketmaster')),
+  source text not null check (source in ('eventbrite', 'ticketmaster', 'opendata')),
   source_url text not null, -- link back to the original listing (required for attribution)
   title text not null,
   description text,

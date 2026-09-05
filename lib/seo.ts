@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/site";
 export const SITE_NAME = "Barcelona Gig Guide";
 
 export const SITE_DESCRIPTION =
-  "Discover live music, comedy, club nights, and festivals in Barcelona. Updated daily from Eventbrite and Ticketmaster.";
+  "Discover live music, comedy, club nights, and festivals in Barcelona. Updated daily from Eventbrite, Ticketmaster, and the city agenda.";
 
 export const SITE_KEYWORDS = [
   "Barcelona gigs",

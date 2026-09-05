@@ -3,10 +3,11 @@
 import EventShareButton from "@/components/EventShareButton";
 import { useI18n } from "@/components/I18nProvider";
 import { getOutboundPath } from "@/lib/affiliate";
-import { formatEventDateTime, isEventToday } from "@/lib/datetime";
+import { isEventToday } from "@/lib/datetime";
 import { formatEventPrice, hasDisplayPrice } from "@/lib/format-event-price";
+import { formatListedEventDate } from "@/lib/format-listed-event";
 import { Messages } from "@/lib/i18n/messages";
-import { NormalizedEvent } from "@/lib/types";
+import { ListedEvent } from "@/lib/types";
 
 const GENRE_KEYS: Record<string, keyof Messages> = {
   "live-music": "liveMusic",
@@ -19,9 +20,10 @@ const GENRE_KEYS: Record<string, keyof Messages> = {
 const SOURCE_KEYS: Record<string, keyof Messages> = {
   eventbrite: "viaEventbrite",
   ticketmaster: "viaTicketmaster",
+  opendata: "viaOpenData",
 };
 
-export default function EventCard({ event }: { event: NormalizedEvent }) {
+export default function EventCard({ event }: { event: ListedEvent }) {
   const { t, locale } = useI18n();
   const isTonight = isEventToday(event.start_datetime);
   const genreKey = event.genre ? GENRE_KEYS[event.genre] : undefined;
@@ -79,7 +81,7 @@ export default function EventCard({ event }: { event: NormalizedEvent }) {
           </div>
           <p className="text-sm text-zinc-400">{event.venue_name}</p>
           <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-            {formatEventDateTime(event.start_datetime, locale)}
+            {formatListedEventDate(event, locale, t)}
           </p>
           {event.genre && (
             <span className="mt-auto w-fit rounded-md border border-accent/20 bg-accent-muted px-2.5 py-1 text-xs font-medium text-accent">
