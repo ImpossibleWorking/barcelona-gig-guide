@@ -4,6 +4,7 @@ import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { getOutboundPath } from "@/lib/affiliate";
+import { getEventPath } from "@/lib/seo";
 import { formatEventPrice } from "@/lib/format-event-price";
 import { formatListedEventDate } from "@/lib/format-listed-event";
 import { MAP_CENTER } from "@/lib/geo";
@@ -30,19 +31,22 @@ function buildPopupHtml(
   locale: Locale,
   t: (key: keyof Messages, vars?: Record<string, string | number>) => string
 ): string {
-  const href = escapeHtml(getOutboundPath(event.id));
+  const eventHref = escapeHtml(getEventPath(event.id));
+  const ticketHref = escapeHtml(getOutboundPath(event.id));
   const title = escapeHtml(event.title);
   const venue = escapeHtml(event.venue_name);
   const date = escapeHtml(formatListedEventDate(event, locale, t));
   const price = escapeHtml(formatEventPrice(event, locale, t));
   const listing = escapeHtml(t("viewListing"));
+  const tickets = escapeHtml(t("getTickets"));
 
   return `
     <div class="gig-map-popup">
       <p class="gig-map-popup-title">${title}</p>
       <p class="gig-map-popup-meta">${venue}</p>
       <p class="gig-map-popup-meta">${date} · ${price}</p>
-      <a class="gig-map-popup-link" href="${href}" target="_blank" rel="noopener noreferrer">${listing}</a>
+      <a class="gig-map-popup-link" href="${eventHref}">${listing}</a>
+      <a class="gig-map-popup-link" href="${ticketHref}" target="_blank" rel="noopener noreferrer">${tickets}</a>
     </div>
   `;
 }

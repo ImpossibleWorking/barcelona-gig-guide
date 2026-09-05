@@ -205,6 +205,62 @@ function mapOpenDataRecord(record: OpenDataRecord): NormalizedEvent | null {
   };
 }
 
+const IMAGE_FETCH_CONCURRENCY = 10;
+const IMAGE_FETCH_TIMEOUT_MS = 8000;
+const GENERIC_IMAGE_PATTERN =
+  /default_images|guia_482x252|mark-agenda|barcelona_600x315/i;
+const GUIA_PHOTO_PATTERN =
+  /class="img-guia"[^>]*>\s*<img[^>]+src="([^"]+)"/i;
+const NASIA_PHOTO_PATTERN = /https:\/\/estatics-nasia\.dtibcn\.cat\/[^"'>\s]+/i;
+
+function isUsableGuiaImage(url: string): boolean {
+  return /^https?:\/\//i.test(url) && !GENERIC_IMAGE_PATTERN.test(url);
+}
+
+function extractGuiaImage(html: string): string | null {
+  const fromBox = html.match(GUIA_PHOTO_PATTERN)?.[1];
+  if (fromBox && isUsableGuiaImage(fromBox)) return fromBox;
+  const nasia = html.match(NASIA_PHOTO_PATTERN)?.[0];
+  return nasia && isUsableGuiaImage(nasia) ? nasia : null;
+}
+
+async function fetchGuiaImage(sourceUrl: string): Promise<string | null> {
+  try {
+    const response = await fetch(sourceUrl, {
+      headers: {
+        Accept: "text/html",
+        "User-Agent": "BarcelonaGigGuide/1.0 (+https://barcelonagigguide.com)",
+      },
+      signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
+    });
+    if (!response.ok) return null;
+    return extractGuiaImage(await response.text());
+  } catch {
+    return null;
+  }
+}
+
+async function attachGuiaImages(events: NormalizedEvent[]): Promise<NormalizedEvent[]> {
+  const withImages = events.slice();
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < withImages.length) {
+      const index = nextIndex++;
+      const event = withImages[index];
+      if (!event) continue;
+      const imageUrl = await fetchGuiaImage(event.source_url);
+      if (imageUrl) withImages[index] = { ...event, image_url: imageUrl };
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: Math.min(IMAGE_FETCH_CONCURRENCY, withImages.length) }, () => worker())
+  );
+
+  return withImages;
+}
+
 async function fetchUpcomingRecords(): Promise<OpenDataRecord[]> {
   const today = new Date().toISOString().slice(0, 10);
   const sql = `SELECT register_id, name, institution_name, start_date, end_date, addresses_road_name, addresses_start_street_number, addresses_neighborhood_name, addresses_zip_code, addresses_town, geo_epgs_4326_lat, geo_epgs_4326_lon FROM "${CULTURAL_AGENDA_RESOURCE_ID}" WHERE start_date >= '${today}'`;
@@ -256,5 +312,5 @@ export async function fetchOpenDataEvents(): Promise<NormalizedEvent[]> {
     events.push(normalized);
   }
 
-  return events;
+  return attachGuiaImages(events);
 }

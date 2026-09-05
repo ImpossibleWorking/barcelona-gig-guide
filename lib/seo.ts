@@ -24,3 +24,12 @@ export const OG_IMAGE_PATH = "/logo.png";
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
 }
+
+/** Indexable event page (not the affiliate /go hop). */
+export function getEventPath(eventId: string): string {
+  return `/e/${encodeURIComponent(eventId)}`;
+}
+
+export function getEventUrl(eventId: string, siteUrl = SITE_URL): string {
+  return `${siteUrl.replace(/\/$/, "")}${getEventPath(eventId)}`;
+}

@@ -2,7 +2,7 @@ import { getOutboundUrl } from "@/lib/affiliate";
 import { HTML_LANG, Locale } from "@/lib/i18n/config";
 import { Messages } from "@/lib/i18n/messages";
 import { NormalizedEvent } from "@/lib/types";
-import { SITE_NAME } from "@/lib/seo";
+import { SITE_NAME, getEventUrl } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 
 const MAX_LISTED_EVENTS = 24;
@@ -39,7 +39,7 @@ function buildEventSchema(event: NormalizedEvent) {
           }
         : {}),
     },
-    url: getOutboundUrl(event.id),
+    url: getEventUrl(event.id),
   };
 
   if (event.end_datetime) schema.endDate = event.end_datetime;
@@ -61,9 +61,22 @@ function buildEventSchema(event: NormalizedEvent) {
       priceCurrency: "EUR",
       availability: "https://schema.org/InStock",
     };
+  } else {
+    schema.offers = {
+      "@type": "Offer",
+      url: getOutboundUrl(event.id),
+      availability: "https://schema.org/InStock",
+    };
   }
 
   return schema;
+}
+
+export function buildEventPageStructuredData(event: NormalizedEvent) {
+  return {
+    "@context": "https://schema.org",
+    ...buildEventSchema(event),
+  };
 }
 
 export function buildHomeStructuredData(

@@ -130,29 +130,43 @@ export async function GET(request: NextRequest) {
     let ticketmasterEvents: NormalizedEvent[] = [];
     let openDataEvents: NormalizedEvent[] = [];
 
-    if (process.env.EVENTBRITE_API_KEY) {
-      try {
-        eventbriteEvents = await fetchEventbriteEvents();
-        sourcesToClean.push("eventbrite");
-      } catch (error) {
-        console.error("Eventbrite fetch failed:", error);
-      }
-    }
+    const [eventbriteResult, ticketmasterResult, openDataResult] = await Promise.all([
+      process.env.EVENTBRITE_API_KEY
+        ? fetchEventbriteEvents()
+            .then((events) => ({ events, error: null as unknown }))
+            .catch((error) => {
+              console.error("Eventbrite fetch failed:", error);
+              return { events: [] as NormalizedEvent[], error };
+            })
+        : Promise.resolve({ events: [] as NormalizedEvent[], error: "skip" as unknown }),
+      process.env.TICKETMASTER_API_KEY
+        ? fetchTicketmasterEvents()
+            .then((events) => ({ events, error: null as unknown }))
+            .catch((error) => {
+              console.error("Ticketmaster fetch failed:", error);
+              return { events: [] as NormalizedEvent[], error };
+            })
+        : Promise.resolve({ events: [] as NormalizedEvent[], error: "skip" as unknown }),
+      fetchOpenDataEvents()
+        .then((events) => ({ events, error: null as unknown }))
+        .catch((error) => {
+          console.error("Open Data BCN fetch failed:", error);
+          return { events: [] as NormalizedEvent[], error };
+        }),
+    ]);
 
-    if (process.env.TICKETMASTER_API_KEY) {
-      try {
-        ticketmasterEvents = await fetchTicketmasterEvents();
-        sourcesToClean.push("ticketmaster");
-      } catch (error) {
-        console.error("Ticketmaster fetch failed:", error);
-      }
-    }
+    eventbriteEvents = eventbriteResult.events;
+    ticketmasterEvents = ticketmasterResult.events;
+    openDataEvents = openDataResult.events;
 
-    try {
-      openDataEvents = await fetchOpenDataEvents();
+    if (process.env.EVENTBRITE_API_KEY && eventbriteResult.error == null) {
+      sourcesToClean.push("eventbrite");
+    }
+    if (process.env.TICKETMASTER_API_KEY && ticketmasterResult.error == null) {
+      sourcesToClean.push("ticketmaster");
+    }
+    if (openDataResult.error == null) {
       sourcesToClean.push("opendata");
-    } catch (error) {
-      console.error("Open Data BCN fetch failed:", error);
     }
 
     const combined = [...eventbriteEvents, ...ticketmasterEvents, ...openDataEvents];
