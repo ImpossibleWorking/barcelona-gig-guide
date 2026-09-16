@@ -3,15 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import EventImage from "@/components/EventImage";
 import EventShareButton from "@/components/EventShareButton";
+import EventVenueMapSlot from "@/components/EventVenueMapSlot";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import RelatedGigList from "@/components/RelatedGigList";
 import SiteFooter from "@/components/SiteFooter";
 import StructuredData from "@/components/StructuredData";
-import { getOutboundPath } from "@/lib/affiliate";
+import TicketLink from "@/components/TicketLink";
+import { getCalendarPath } from "@/lib/calendar";
 import { formatEventDateTime, isEventToday } from "@/lib/datetime";
-import { getEventById } from "@/lib/events";
+import { getEventById, getUpcomingEvents } from "@/lib/events";
 import { formatEventPrice } from "@/lib/format-event-price";
+import { getMapsSearchUrl } from "@/lib/geo";
 import { getLocale, getMessages } from "@/lib/i18n/get-locale";
 import { interpolate } from "@/lib/i18n/messages";
+import { getRelatedListings } from "@/lib/related-events";
 import { SITE_NAME, absoluteUrl, getEventPath } from "@/lib/seo";
 import { buildEventPageStructuredData } from "@/lib/structured-data";
 
@@ -39,6 +44,14 @@ export async function generateMetadata({
     price,
   });
   const canonical = getEventPath(event.id);
+  const shareImage = event.image_url
+    ? { url: event.image_url, alt: event.title }
+    : {
+        url: absoluteUrl(`${canonical}/opengraph-image`),
+        width: 1200,
+        height: 630,
+        alt: title,
+      };
 
   return {
     title,
@@ -48,18 +61,20 @@ export async function generateMetadata({
       title: `${title} | ${SITE_NAME}`,
       description,
       url: absoluteUrl(canonical),
-      ...(event.image_url ? { images: [{ url: event.image_url, alt: event.title }] } : {}),
+      images: [shareImage],
     },
     twitter: {
+      card: "summary_large_image",
       title: `${title} | ${SITE_NAME}`,
       description,
-      ...(event.image_url ? { images: [event.image_url] } : {}),
+      images: [shareImage.url],
     },
   };
 }
 
 export default async function EventPage({ params }: { params: { id: string } }) {
-  const event = await getEventById(decodeURIComponent(params.id));
+  const eventId = decodeURIComponent(params.id);
+  const [event, upcoming] = await Promise.all([getEventById(eventId), getUpcomingEvents()]);
   if (!event) notFound();
 
   const locale = getLocale();
@@ -67,6 +82,12 @@ export default async function EventPage({ params }: { params: { id: string } }) 
   const date = formatEventDateTime(event.start_datetime, locale);
   const price = formatEventPrice(event, locale, (key, vars) => interpolate(copy[key], vars));
   const tonight = isEventToday(event.start_datetime);
+  const mapsUrl = getMapsSearchUrl(
+    event.latitude,
+    event.longitude,
+    [event.venue_name, event.address, "Barcelona"].filter(Boolean).join(", ")
+  );
+  const { sameVenue, sameNight } = getRelatedListings(event, upcoming);
 
   return (
     <>
@@ -111,19 +132,50 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 </p>
               ) : null}
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a
-                  href={getOutboundPath(event.id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                <TicketLink
+                  event={event}
                   className="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-bold text-black transition hover:bg-accent-hover"
                 >
                   {copy.getTickets}
+                </TicketLink>
+                <a
+                  href={getCalendarPath(event.id)}
+                  className="inline-flex items-center justify-center rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-zinc-200 transition hover:border-accent/40 hover:text-accent"
+                >
+                  {copy.addToCalendar}
                 </a>
+                {mapsUrl ? (
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-zinc-200 transition hover:border-accent/40 hover:text-accent"
+                  >
+                    {copy.openInMaps}
+                  </a>
+                ) : null}
                 <EventShareButton eventId={event.id} title={event.title} />
               </div>
             </div>
           </div>
+
+          {event.latitude != null && event.longitude != null ? (
+            <div className="mt-6">
+              <EventVenueMapSlot
+                latitude={event.latitude}
+                longitude={event.longitude}
+                venueName={event.venue_name}
+              />
+            </div>
+          ) : null}
+
+          <RelatedGigList
+            title={interpolate(copy.moreAtVenue, { venue: event.venue_name })}
+            events={sameVenue}
+            locale={locale}
+          />
+          <RelatedGigList title={copy.sameNight} events={sameNight} locale={locale} />
         </article>
 
         <SiteFooter lastSyncedAt={event.last_synced_at} />

@@ -51,6 +51,21 @@ body {
     background: rgba(21, 32, 34, 0.85);
   }
 
+  .filter-scroll {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(45, 212, 191, 0.4) transparent;
+  }
+
+  .filter-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .filter-scroll::-webkit-scrollbar-thumb {
+    background: rgba(45, 212, 191, 0.35);
+    border-radius: 999px;
+  }
+
   .gig-map-marker {
     background: transparent;
     border: none;

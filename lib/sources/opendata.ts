@@ -212,9 +212,34 @@ const GENERIC_IMAGE_PATTERN =
 const GUIA_PHOTO_PATTERN =
   /class="img-guia"[^>]*>\s*<img[^>]+src="([^"]+)"/i;
 const NASIA_PHOTO_PATTERN = /https:\/\/estatics-nasia\.dtibcn\.cat\/[^"'>\s]+/i;
+const DESCRIPTION_MAX_LENGTH = 1500;
 
 function isUsableGuiaImage(url: string): boolean {
   return /^https?:\/\//i.test(url) && !GENERIC_IMAGE_PATTERN.test(url);
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function htmlToPlainText(html: string): string {
+  return decodeHtmlEntities(
+    html
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/[ \t]{2,}/g, " ")
+      .trim()
+  );
 }
 
 function extractGuiaImage(html: string): string | null {
@@ -224,7 +249,49 @@ function extractGuiaImage(html: string): string | null {
   return nasia && isUsableGuiaImage(nasia) ? nasia : null;
 }
 
-async function fetchGuiaImage(sourceUrl: string): Promise<string | null> {
+function extractGuiaDescription(html: string): string | null {
+  const blocks = Array.from(html.matchAll(/<div class="cos">([\s\S]*?)<\/div>/gi))
+    .map((match) => htmlToPlainText(match[1]))
+    .filter((text) => text.length > 40);
+  if (blocks.length === 0) return null;
+
+  const combined = blocks.join("\n\n");
+  if (combined.length <= DESCRIPTION_MAX_LENGTH) return combined;
+  return `${combined.slice(0, DESCRIPTION_MAX_LENGTH).replace(/\s+\S*$/, "").trim()}…`;
+}
+
+function extractGuiaPrices(html: string): {
+  price_min: number | null;
+  price_max: number | null;
+  is_free: boolean;
+} {
+  const section =
+    html.match(
+      /id="div-informacio"[\s\S]*?(id="div-com-arribar"|id="contingut-addicional")/i
+    )?.[0] ?? "";
+  const amounts = Array.from(section.matchAll(/(\d+(?:[.,]\d+)?)\s*€/g))
+    .map((match) => Number(match[1].replace(",", ".")))
+    .filter((amount) => Number.isFinite(amount) && amount >= 0 && amount < 500);
+  const is_free = FREE_PATTERN.test(section) || amounts.some((amount) => amount === 0);
+
+  if (amounts.length === 0) {
+    return { price_min: null, price_max: null, is_free };
+  }
+
+  const price_min = Math.min(...amounts);
+  const price_max = Math.max(...amounts);
+  return { price_min, price_max, is_free: is_free || price_min === 0 };
+}
+
+interface GuiaDetails {
+  image_url: string | null;
+  description: string | null;
+  price_min: number | null;
+  price_max: number | null;
+  is_free: boolean;
+}
+
+async function fetchGuiaDetails(sourceUrl: string): Promise<GuiaDetails | null> {
   try {
     const response = await fetch(sourceUrl, {
       headers: {
@@ -234,31 +301,44 @@ async function fetchGuiaImage(sourceUrl: string): Promise<string | null> {
       signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
     });
     if (!response.ok) return null;
-    return extractGuiaImage(await response.text());
+    const html = await response.text();
+    return {
+      image_url: extractGuiaImage(html),
+      description: extractGuiaDescription(html),
+      ...extractGuiaPrices(html),
+    };
   } catch {
     return null;
   }
 }
 
-async function attachGuiaImages(events: NormalizedEvent[]): Promise<NormalizedEvent[]> {
-  const withImages = events.slice();
+async function enrichFromGuia(events: NormalizedEvent[]): Promise<NormalizedEvent[]> {
+  const enriched = events.slice();
   let nextIndex = 0;
 
   async function worker() {
-    while (nextIndex < withImages.length) {
+    while (nextIndex < enriched.length) {
       const index = nextIndex++;
-      const event = withImages[index];
+      const event = enriched[index];
       if (!event) continue;
-      const imageUrl = await fetchGuiaImage(event.source_url);
-      if (imageUrl) withImages[index] = { ...event, image_url: imageUrl };
+      const details = await fetchGuiaDetails(event.source_url);
+      if (!details) continue;
+      enriched[index] = {
+        ...event,
+        image_url: details.image_url ?? event.image_url,
+        description: details.description ?? event.description,
+        price_min: details.price_min ?? event.price_min,
+        price_max: details.price_max ?? event.price_max,
+        is_free: event.is_free || details.is_free,
+      };
     }
   }
 
   await Promise.all(
-    Array.from({ length: Math.min(IMAGE_FETCH_CONCURRENCY, withImages.length) }, () => worker())
+    Array.from({ length: Math.min(IMAGE_FETCH_CONCURRENCY, enriched.length) }, () => worker())
   );
 
-  return withImages;
+  return enriched;
 }
 
 async function fetchUpcomingRecords(): Promise<OpenDataRecord[]> {
@@ -312,5 +392,5 @@ export async function fetchOpenDataEvents(): Promise<NormalizedEvent[]> {
     events.push(normalized);
   }
 
-  return attachGuiaImages(events);
+  return enrichFromGuia(events);
 }

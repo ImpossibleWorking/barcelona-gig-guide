@@ -159,3 +159,17 @@ export function isBarcelonaMetroLocation(
 
   return METRO_VENUE_HINTS.some((hint) => venue.includes(hint));
 }
+
+export function getMapsSearchUrl(
+  latitude?: number | null,
+  longitude?: number | null,
+  query?: string | null
+): string | null {
+  if (latitude != null && longitude != null) {
+    return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  }
+
+  const trimmed = query?.trim();
+  if (!trimmed) return null;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trimmed)}`;
+}

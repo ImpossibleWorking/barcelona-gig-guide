@@ -2,8 +2,8 @@
 
 import EventImage from "@/components/EventImage";
 import EventShareButton from "@/components/EventShareButton";
+import TicketLink from "@/components/TicketLink";
 import { useI18n } from "@/components/I18nProvider";
-import { getOutboundPath } from "@/lib/affiliate";
 import { isEventToday } from "@/lib/datetime";
 import { formatEventPrice, hasDisplayPrice } from "@/lib/format-event-price";
 import { formatListedEventDate } from "@/lib/format-listed-event";
@@ -31,7 +31,6 @@ export default function EventCard({ event }: { event: ListedEvent }) {
   const genreKey = event.genre ? GENRE_KEYS[event.genre] : undefined;
   const sourceKey = SOURCE_KEYS[event.source];
   const eventPath = getEventPath(event.id);
-  const ticketPath = getOutboundPath(event.id);
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-white/8 bg-surface-raised transition duration-200 hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5">
@@ -70,11 +69,9 @@ export default function EventCard({ event }: { event: ListedEvent }) {
         </div>
       </a>
       <div className="flex items-center justify-between gap-3 border-t border-white/8 px-4 py-3">
-        <a
-          href={ticketPath}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t("viewTicketsAria", { title: event.title, venue: event.venue_name })}
+        <TicketLink
+          event={event}
+          ariaLabel={t("viewTicketsAria", { title: event.title, venue: event.venue_name })}
           className={`rounded-md px-3 py-1.5 text-xs font-bold transition hover:opacity-90 ${
             hasDisplayPrice(event)
               ? "bg-accent text-black"
@@ -82,7 +79,7 @@ export default function EventCard({ event }: { event: ListedEvent }) {
           }`}
         >
           {t("getTickets")} · {formatEventPrice(event, locale, t)}
-        </a>
+        </TicketLink>
         <EventShareButton eventId={event.id} title={event.title} />
       </div>
     </article>

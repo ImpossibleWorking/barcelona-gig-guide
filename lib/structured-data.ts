@@ -43,6 +43,7 @@ function buildEventSchema(event: NormalizedEvent) {
   };
 
   if (event.end_datetime) schema.endDate = event.end_datetime;
+  if (event.description) schema.description = event.description;
   if (event.image_url) schema.image = event.image_url;
 
   if (event.is_free) {

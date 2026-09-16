@@ -93,7 +93,7 @@ export default function EventsExplorer({ events }: { events: NormalizedEvent[] }
         </button>
       </div>
 
-      <div className={`${sidebarOpen ? "block" : "hidden"} lg:block lg:w-72 lg:flex-shrink-0`}>
+      <div className={`${sidebarOpen ? "block" : "hidden"} lg:contents`}>
         <FilterSidebar filters={filters} onChange={setFilters} />
       </div>
 

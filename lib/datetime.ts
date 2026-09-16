@@ -31,3 +31,38 @@ export function formatEventDateTime(iso: string, locale: Locale = "en"): string 
 export function isEventToday(iso: string): boolean {
   return toTimeZoneDateString(iso) === toTimeZoneDateString(new Date());
 }
+
+export type DatePreset = "tonight" | "weekend" | "week";
+
+/** Add calendar days to a YYYY-MM-DD string without using the browser timezone. */
+export function addCalendarDays(ymd: string, days: number): string {
+  const [year, month, day] = ymd.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
+}
+
+/** Tonight / weekend / week bounds in Europe/Madrid, not the visitor's clock. */
+export function getDatePresetRange(
+  preset: DatePreset,
+  now: Date = new Date()
+): { dateFrom: string; dateTo: string } {
+  const today = toTimeZoneDateString(now);
+  const weekday = toTimeZoneWeekday(now);
+
+  if (preset === "tonight") {
+    return { dateFrom: today, dateTo: today };
+  }
+
+  if (preset === "weekend") {
+    if (weekday === 6) {
+      return { dateFrom: today, dateTo: addCalendarDays(today, 1) };
+    }
+    if (weekday === 0) {
+      return { dateFrom: addCalendarDays(today, -1), dateTo: today };
+    }
+    const saturday = addCalendarDays(today, 6 - weekday);
+    return { dateFrom: saturday, dateTo: addCalendarDays(saturday, 1) };
+  }
+
+  const daysUntilSunday = weekday === 0 ? 0 : 7 - weekday;
+  return { dateFrom: today, dateTo: addCalendarDays(today, daysUntilSunday) };
+}

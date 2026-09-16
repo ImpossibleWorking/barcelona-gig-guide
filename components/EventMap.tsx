@@ -4,6 +4,7 @@ import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { getOutboundPath } from "@/lib/affiliate";
+import { trackTicketClick } from "@/lib/analytics";
 import { getEventPath } from "@/lib/seo";
 import { formatEventPrice } from "@/lib/format-event-price";
 import { formatListedEventDate } from "@/lib/format-listed-event";
@@ -46,7 +47,7 @@ function buildPopupHtml(
       <p class="gig-map-popup-meta">${venue}</p>
       <p class="gig-map-popup-meta">${date} · ${price}</p>
       <a class="gig-map-popup-link" href="${eventHref}">${listing}</a>
-      <a class="gig-map-popup-link" href="${ticketHref}" target="_blank" rel="noopener noreferrer">${tickets}</a>
+      <a class="gig-map-popup-link gig-map-popup-tickets" href="${ticketHref}" target="_blank" rel="noopener noreferrer" data-event-id="${escapeHtml(event.id)}" data-event-title="${title}" data-event-source="${escapeHtml(event.source)}" data-event-venue="${venue}">${tickets}</a>
     </div>
   `;
 }
@@ -163,6 +164,25 @@ export default function EventMap({
 
     return () => cancelAnimationFrame(frame);
   }, [isVisible, mapReady, eventKey]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onClick = (click: MouseEvent) => {
+      const link = (click.target as HTMLElement | null)?.closest("a.gig-map-popup-tickets");
+      if (!link) return;
+      trackTicketClick({
+        id: link.getAttribute("data-event-id") ?? "",
+        title: link.getAttribute("data-event-title") ?? "",
+        source: (link.getAttribute("data-event-source") ?? "opendata") as ListedEvent["source"],
+        venue_name: link.getAttribute("data-event-venue") ?? "",
+      });
+    };
+
+    container.addEventListener("click", onClick);
+    return () => container.removeEventListener("click", onClick);
+  }, [isVisible, mapReady]);
 
   if (events.length === 0) {
     return <MapEmptyState totalEvents={totalEvents} hasActiveFilters={hasActiveFilters} />;
