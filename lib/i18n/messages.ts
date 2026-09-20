@@ -8,10 +8,10 @@ const en = {
   tagline: "Find live music, comedy, clubbing, and festivals across Barcelona.",
   upcomingCount: "{count} upcoming listings",
   demoBanner:
-    "Showing sample listings so you can browse the guide. Connect Supabase plus Eventbrite and Ticketmaster keys, then hit /api/sync for live data. The city agenda needs no key.",
+    "Showing sample listings so you can browse the guide. Connect Supabase plus Eventbrite and Ticketmaster keys, then hit /api/sync for live data. The city agenda and venue calendars need no extra keys.",
   listingsUpdated: "Listings last updated {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide aggregates public event listings from Eventbrite, Ticketmaster, and the Ajuntament de Barcelona cultural agenda (CC BY 4.0). This site is not affiliated with, endorsed by, or operated by those platforms. Tickets and full event details are sold and hosted by the original listing — follow the link on each event to book.",
+    "Barcelona Gig Guide aggregates public event listings from Eventbrite, Ticketmaster, official venue calendars, and the Ajuntament de Barcelona cultural agenda (CC BY 4.0). This site is not affiliated with, endorsed by, or operated by those platforms. Tickets and full event details are sold and hosted by the original listing — follow the link on each event to book.",
   privacyLink: "Privacy policy",
   footerTag: "Visca la música.",
   language: "Language",
@@ -48,7 +48,7 @@ const en = {
   eventCountMany: "{count} events",
   loadingMap: "Loading map…",
   emptyTitle: "No upcoming events right now",
-  emptyBody: "Check back soon — listings refresh daily from Eventbrite, Ticketmaster, and the city agenda.",
+  emptyBody: "Check back soon — listings refresh daily from Eventbrite, Ticketmaster, official venue calendars, and the city agenda.",
   noMatchTitle: "No events match your filters",
   noMatchActive:
     "Try clearing your search, widening the date range, adjusting genres, turning off Free only, or hitting Reset filters.",
@@ -64,6 +64,7 @@ const en = {
   viaEventbrite: "via Eventbrite",
   viaTicketmaster: "via Ticketmaster",
   viaOpenData: "via Barcelona agenda",
+  viaVenue: "via the venue",
   viewTicketsAria: "{title} at {venue} — view tickets",
   share: "Share",
   shareAria: "Share {title}",
@@ -80,7 +81,7 @@ const en = {
   metaHomeTitle: "{count}+ Upcoming Gigs in Barcelona",
   metaHomeTitleEmpty: "Live Gigs in Barcelona",
   metaHomeDescription:
-    "Browse {count} upcoming gigs, club nights, comedy shows, and festivals in Barcelona. Updated daily from Eventbrite, Ticketmaster, and the city agenda.",
+    "Browse {count} upcoming gigs, club nights, comedy shows, and festivals in Barcelona. Updated daily from Eventbrite, Ticketmaster, official venue calendars, and the city agenda.",
   layoutTitle: "Barcelona Gig Guide | Live Gigs in Barcelona",
   backToGigs: "← Back to gigs",
   getTickets: "Get tickets",
@@ -100,7 +101,7 @@ const en = {
   privacyOverviewP1:
     "{site} ({url}) helps you discover live music, comedy, clubbing, and festivals in Barcelona. This policy covers our website.",
   privacyOverviewP2:
-    "We do not require you to create an account to browse events. We do not sell tickets directly — ticket purchases happen on third-party sites such as Eventbrite, Ticketmaster, or the city agenda when you follow a listing link.",
+    "We do not require you to create an account to browse events. We do not sell tickets directly — ticket purchases happen on third-party sites such as Eventbrite, Ticketmaster, the city agenda, or venue box offices when you follow a listing link.",
   privacyCollect: "Information we collect",
   privacyCollectListings:
     "Event listings. We store and display publicly available event data (titles, venues, dates, prices, images, and ticket links) sourced from third-party platforms. This information is not personal data about you.",
@@ -117,7 +118,7 @@ const en = {
   privacyThird: "Third-party services",
   privacyThirdIntro: "We rely on the following types of third parties:",
   privacyThirdSources:
-    "Event sources — Eventbrite, Ticketmaster, and the Ajuntament de Barcelona open-data agenda (ticket and event detail pages)",
+    "Event sources — Eventbrite, Ticketmaster, official venue calendars, and the Ajuntament de Barcelona open-data agenda (ticket and event detail pages)",
   privacyThirdHost: "Database & hosting — Supabase and Vercel",
   privacyThirdAnalytics: "Analytics — Google Analytics (website only)",
   privacyThirdMaps: "Maps — OpenStreetMap / CARTO tiles on the events map",
@@ -146,10 +147,10 @@ const es: Messages = {
   tagline: "Encuentra música en directo, comedia, noches de club y festivales en Barcelona.",
   upcomingCount: "{count} próximos conciertos",
   demoBanner:
-    "Mostrando ejemplos para que puedas explorar la guía. Conecta Supabase y las claves de Eventbrite y Ticketmaster, y llama a /api/sync para datos reales.",
+    "Mostrando ejemplos para que puedas explorar la guía. Conecta Supabase y las claves de Eventbrite y Ticketmaster, y llama a /api/sync para datos reales. La agenda municipal y las carteleras de las salas no necesitan claves extra.",
   listingsUpdated: "Cartelera actualizada {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide agrupa carteleras públicas de Eventbrite, Ticketmaster y la agenda cultural del Ayuntamiento de Barcelona (CC BY 4.0). Este sitio no está afiliado, respaldado ni operado por esas plataformas. Las entradas y los detalles completos los gestiona el anuncio original: sigue el enlace de cada evento para reservar.",
+    "Barcelona Gig Guide agrupa carteleras públicas de Eventbrite, Ticketmaster, las salas oficiales y la agenda cultural del Ayuntamiento de Barcelona (CC BY 4.0). Este sitio no está afiliado, respaldado ni operado por esas plataformas. Las entradas y los detalles completos los gestiona el anuncio original: sigue el enlace de cada evento para reservar.",
   privacyLink: "Política de privacidad",
   footerTag: "Visca la música.",
   language: "Idioma",
@@ -186,7 +187,7 @@ const es: Messages = {
   eventCountMany: "{count} eventos",
   loadingMap: "Cargando mapa…",
   emptyTitle: "No hay eventos próximos ahora mismo",
-  emptyBody: "Vuelve pronto: la cartelera se actualiza cada día desde Eventbrite, Ticketmaster y la agenda municipal.",
+  emptyBody: "Vuelve pronto: la cartelera se actualiza cada día desde Eventbrite, Ticketmaster, las salas y la agenda municipal.",
   noMatchTitle: "Ningún evento coincide con tus filtros",
   noMatchActive:
     "Prueba a borrar la búsqueda, ampliar las fechas, cambiar géneros, desactivar Solo gratis o restablecer los filtros.",
@@ -202,6 +203,7 @@ const es: Messages = {
   viaEventbrite: "vía Eventbrite",
   viaTicketmaster: "vía Ticketmaster",
   viaOpenData: "vía agenda de Barcelona",
+  viaVenue: "vía la sala",
   viewTicketsAria: "{title} en {venue} — ver entradas",
   share: "Compartir",
   shareAria: "Compartir {title}",
@@ -218,7 +220,7 @@ const es: Messages = {
   metaHomeTitle: "{count}+ conciertos en Barcelona",
   metaHomeTitleEmpty: "Conciertos en Barcelona",
   metaHomeDescription:
-    "Explora {count} conciertos, noches de club, comedia y festivales en Barcelona. Actualizado a diario desde Eventbrite, Ticketmaster y la agenda municipal.",
+    "Explora {count} conciertos, noches de club, comedia y festivales en Barcelona. Actualizado a diario desde Eventbrite, Ticketmaster, las carteleras de las salas y la agenda municipal.",
   layoutTitle: "Barcelona Gig Guide | Conciertos en Barcelona",
   backToGigs: "← Volver a los conciertos",
   getTickets: "Conseguir entradas",
@@ -238,7 +240,7 @@ const es: Messages = {
   privacyOverviewP1:
     "{site} ({url}) te ayuda a descubrir música en directo, comedia, clubbing y festivales en Barcelona. Esta política cubre nuestro sitio web.",
   privacyOverviewP2:
-    "No hace falta crear una cuenta para consultar eventos. No vendemos entradas: la compra se hace en sitios de terceros como Eventbrite, Ticketmaster o la agenda municipal al seguir el enlace del anuncio.",
+    "No hace falta crear una cuenta para consultar eventos. No vendemos entradas: la compra se hace en sitios de terceros como Eventbrite, Ticketmaster, la agenda municipal o las taquillas de las salas al seguir el enlace del anuncio.",
   privacyCollect: "Información que recopilamos",
   privacyCollectListings:
     "Cartelera. Guardamos y mostramos datos públicos de eventos (títulos, salas, fechas, precios, imágenes y enlaces) procedentes de plataformas de terceros. Esa información no es un dato personal tuyo.",
@@ -255,7 +257,7 @@ const es: Messages = {
   privacyThird: "Servicios de terceros",
   privacyThirdIntro: "Recurrimos a estos tipos de terceros:",
   privacyThirdSources:
-    "Fuentes de eventos — Eventbrite, Ticketmaster y la agenda de datos abiertos del Ayuntamiento de Barcelona (páginas de entradas y detalles)",
+    "Fuentes de eventos — Eventbrite, Ticketmaster, las carteleras oficiales de las salas y la agenda de datos abiertos del Ayuntamiento de Barcelona (páginas de entradas y detalles)",
   privacyThirdHost: "Base de datos y alojamiento — Supabase y Vercel",
   privacyThirdAnalytics: "Analítica — Google Analytics (solo web)",
   privacyThirdMaps: "Mapas — teselas de OpenStreetMap / CARTO en el mapa de eventos",
@@ -284,10 +286,10 @@ const ca: Messages = {
   tagline: "Troba música en directe, comèdia, nits de club i festivals a Barcelona.",
   upcomingCount: "{count} concerts pròxims",
   demoBanner:
-    "Mostrem exemples perquè puguis explorar la guia. Connecta Supabase i les claus d'Eventbrite i Ticketmaster, i truca a /api/sync per a dades reals.",
+    "Mostrem exemples perquè puguis explorar la guia. Connecta Supabase i les claus d'Eventbrite i Ticketmaster, i truca a /api/sync per a dades reals. L'agenda municipal i les cartelleres de les sales no necessiten claus extra.",
   listingsUpdated: "Cartellera actualitzada {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide agrega cartelleres públiques d'Eventbrite, Ticketmaster i l'agenda cultural de l'Ajuntament de Barcelona (CC BY 4.0). Aquest lloc no està afiliat, avalat ni operat per aquestes plataformes. Les entrades i els detalls complets els gestiona l'anunci original: segueix l'enllaç de cada esdeveniment per reservar.",
+    "Barcelona Gig Guide agrega cartelleres públiques d'Eventbrite, Ticketmaster, les sales oficials i l'agenda cultural de l'Ajuntament de Barcelona (CC BY 4.0). Aquest lloc no està afiliat, avalat ni operat per aquestes plataformes. Les entrades i els detalls complets els gestiona l'anunci original: segueix l'enllaç de cada esdeveniment per reservar.",
   privacyLink: "Política de privadesa",
   footerTag: "Visca la música.",
   language: "Idioma",
@@ -324,7 +326,7 @@ const ca: Messages = {
   eventCountMany: "{count} esdeveniments",
   loadingMap: "S'està carregant el mapa…",
   emptyTitle: "Ara mateix no hi ha esdeveniments pròxims",
-  emptyBody: "Torna aviat: la cartellera s'actualitza cada dia des d'Eventbrite, Ticketmaster i l'agenda municipal.",
+  emptyBody: "Torna aviat: la cartellera s'actualitza cada dia des d'Eventbrite, Ticketmaster, les sales i l'agenda municipal.",
   noMatchTitle: "Cap esdeveniment no coincideix amb els filtres",
   noMatchActive:
     "Prova d'esborrar la cerca, ampliar les dates, canviar gèneres, desactivar Només gratuït o restablir els filtres.",
@@ -340,6 +342,7 @@ const ca: Messages = {
   viaEventbrite: "via Eventbrite",
   viaTicketmaster: "via Ticketmaster",
   viaOpenData: "via agenda de Barcelona",
+  viaVenue: "via la sala",
   viewTicketsAria: "{title} a {venue} — veure entrades",
   share: "Comparteix",
   shareAria: "Comparteix {title}",
@@ -356,7 +359,7 @@ const ca: Messages = {
   metaHomeTitle: "{count}+ concerts a Barcelona",
   metaHomeTitleEmpty: "Concerts a Barcelona",
   metaHomeDescription:
-    "Explora {count} concerts, nits de club, comèdia i festivals a Barcelona. Actualitzat diàriament des d'Eventbrite, Ticketmaster i l'agenda municipal.",
+    "Explora {count} concerts, nits de club, comèdia i festivals a Barcelona. Actualitzat diàriament des d'Eventbrite, Ticketmaster, les cartelleres de les sales i l'agenda municipal.",
   layoutTitle: "Barcelona Gig Guide | Concerts a Barcelona",
   backToGigs: "← Torna als concerts",
   getTickets: "Aconseguir entrades",
@@ -376,7 +379,7 @@ const ca: Messages = {
   privacyOverviewP1:
     "{site} ({url}) t'ajuda a descobrir música en directe, comèdia, clubbing i festivals a Barcelona. Aquesta política cobreix el nostre lloc web.",
   privacyOverviewP2:
-    "No cal crear un compte per consultar esdeveniments. No venem entrades: la compra es fa en llocs de tercers com Eventbrite, Ticketmaster o l'agenda municipal quan segueixes l'enllaç de l'anunci.",
+    "No cal crear un compte per consultar esdeveniments. No venem entrades: la compra es fa en llocs de tercers com Eventbrite, Ticketmaster, l'agenda municipal o les taquilles de les sales quan segueixes l'enllaç de l'anunci.",
   privacyCollect: "Informació que recollim",
   privacyCollectListings:
     "Cartellera. Emmagatzemem i mostrem dades públiques d'esdeveniments (títols, sales, dates, preus, imatges i enllaços) procedents de plataformes de tercers. Aquesta informació no és una dada personal teva.",
@@ -393,7 +396,7 @@ const ca: Messages = {
   privacyThird: "Serveis de tercers",
   privacyThirdIntro: "Recorrem a aquests tipus de tercers:",
   privacyThirdSources:
-    "Fonts d'esdeveniments — Eventbrite, Ticketmaster i l'agenda de dades obertes de l'Ajuntament de Barcelona (pàgines d'entrades i detalls)",
+    "Fonts d'esdeveniments — Eventbrite, Ticketmaster, les cartelleres oficials de les sales i l'agenda de dades obertes de l'Ajuntament de Barcelona (pàgines d'entrades i detalls)",
   privacyThirdHost: "Base de dades i allotjament — Supabase i Vercel",
   privacyThirdAnalytics: "Analítica — Google Analytics (només web)",
   privacyThirdMaps: "Mapes — tesel·les d'OpenStreetMap / CARTO al mapa d'esdeveniments",
@@ -422,10 +425,10 @@ const it: Messages = {
   tagline: "Trova concerti, stand-up, serate in club e festival a Barcellona.",
   upcomingCount: "{count} concerti in arrivo",
   demoBanner:
-    "Mostriamo esempi per farti esplorare la guida. Collega Supabase e le chiavi di Eventbrite e Ticketmaster, poi chiama /api/sync per i dati reali.",
+    "Mostriamo esempi per farti esplorare la guida. Collega Supabase e le chiavi di Eventbrite e Ticketmaster, poi chiama /api/sync per i dati reali. L'agenda comunale e i calendari dei locali non richiedono chiavi extra.",
   listingsUpdated: "Cartellone aggiornato {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide aggrega i cartelloni pubblici di Eventbrite, Ticketmaster e l'agenda culturale del Comune di Barcellona (CC BY 4.0). Questo sito non è affiliato, sostenuto né gestito da quelle piattaforme. I biglietti e i dettagli completi sono gestiti dall'annuncio originale: segui il link di ogni evento per prenotare.",
+    "Barcelona Gig Guide aggrega i cartelloni pubblici di Eventbrite, Ticketmaster, i calendari ufficiali dei locali e l'agenda culturale del Comune di Barcellona (CC BY 4.0). Questo sito non è affiliato, sostenuto né gestito da quelle piattaforme. I biglietti e i dettagli completi sono gestiti dall'annuncio originale: segui il link di ogni evento per prenotare.",
   privacyLink: "Informativa sulla privacy",
   footerTag: "Visca la música.",
   language: "Lingua",
@@ -462,7 +465,7 @@ const it: Messages = {
   eventCountMany: "{count} eventi",
   loadingMap: "Caricamento della mappa…",
   emptyTitle: "Nessun evento in programma al momento",
-  emptyBody: "Torna presto: il cartellone si aggiorna ogni giorno da Eventbrite, Ticketmaster e l'agenda comunale.",
+  emptyBody: "Torna presto: il cartellone si aggiorna ogni giorno da Eventbrite, Ticketmaster, i locali e l'agenda comunale.",
   noMatchTitle: "Nessun evento corrisponde ai filtri",
   noMatchActive:
     "Prova a cancellare la ricerca, allargare le date, cambiare i generi, disattivare Solo gratis o reimpostare i filtri.",
@@ -478,6 +481,7 @@ const it: Messages = {
   viaEventbrite: "via Eventbrite",
   viaTicketmaster: "via Ticketmaster",
   viaOpenData: "via agenda di Barcellona",
+  viaVenue: "via il locale",
   viewTicketsAria: "{title} a {venue} — vedi i biglietti",
   share: "Condividi",
   shareAria: "Condividi {title}",
@@ -494,7 +498,7 @@ const it: Messages = {
   metaHomeTitle: "{count}+ concerti a Barcellona",
   metaHomeTitleEmpty: "Concerti a Barcellona",
   metaHomeDescription:
-    "Esplora {count} concerti, serate in club, comedy e festival a Barcellona. Aggiornato ogni giorno da Eventbrite, Ticketmaster e l'agenda comunale.",
+    "Esplora {count} concerti, serate in club, comedy e festival a Barcellona. Aggiornato ogni giorno da Eventbrite, Ticketmaster, i calendari dei locali e l'agenda comunale.",
   layoutTitle: "Barcelona Gig Guide | Concerti a Barcellona",
   backToGigs: "← Torna ai concerti",
   getTickets: "Prendi i biglietti",
@@ -514,7 +518,7 @@ const it: Messages = {
   privacyOverviewP1:
     "{site} ({url}) ti aiuta a scoprire musica dal vivo, comedy, clubbing e festival a Barcellona. Questa informativa riguarda il nostro sito.",
   privacyOverviewP2:
-    "Non serve creare un account per consultare gli eventi. Non vendiamo biglietti: l'acquisto avviene su siti di terze parti come Eventbrite, Ticketmaster o l'agenda comunale quando segui il link dell'annuncio.",
+    "Non serve creare un account per consultare gli eventi. Non vendiamo biglietti: l'acquisto avviene su siti di terze parti come Eventbrite, Ticketmaster, l'agenda comunale o le biglietterie dei locali quando segui il link dell'annuncio.",
   privacyCollect: "Informazioni che raccogliamo",
   privacyCollectListings:
     "Cartellone. Conserviamo e mostriamo dati pubblici sugli eventi (titoli, locali, date, prezzi, immagini e link) provenienti da piattaforme di terze parti. Queste informazioni non sono dati personali tuoi.",
@@ -531,7 +535,7 @@ const it: Messages = {
   privacyThird: "Servizi di terze parti",
   privacyThirdIntro: "Ci avvaliamo di questi tipi di terze parti:",
   privacyThirdSources:
-    "Fonti degli eventi — Eventbrite, Ticketmaster e l'agenda open data del Comune di Barcellona (pagine di biglietti e dettagli)",
+    "Fonti degli eventi — Eventbrite, Ticketmaster, i calendari ufficiali dei locali e l'agenda open data del Comune di Barcellona (pagine di biglietti e dettagli)",
   privacyThirdHost: "Database e hosting — Supabase e Vercel",
   privacyThirdAnalytics: "Analisi — Google Analytics (solo sito)",
   privacyThirdMaps: "Mappe — tile OpenStreetMap / CARTO sulla mappa degli eventi",
@@ -560,10 +564,10 @@ const fr: Messages = {
   tagline: "Trouvez concerts, stand-up, soirées club et festivals à Barcelone.",
   upcomingCount: "{count} concerts à venir",
   demoBanner:
-    "Exemples affichés pour parcourir le guide. Connectez Supabase et les clés Eventbrite et Ticketmaster, puis appelez /api/sync pour les données en direct.",
+    "Exemples affichés pour parcourir le guide. Connectez Supabase et les clés Eventbrite et Ticketmaster, puis appelez /api/sync pour les données en direct. L'agenda municipal et les calendriers des salles n'ont pas besoin de clés supplémentaires.",
   listingsUpdated: "Programme mis à jour {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide agrège les programmes publics d'Eventbrite, de Ticketmaster et de l'agenda culturel de la mairie de Barcelone (CC BY 4.0). Ce site n'est ni affilié, ni approuvé, ni exploité par ces plateformes. Les billets et les détails complets sont gérés par l'annonce d'origine — suivez le lien de chaque événement pour réserver.",
+    "Barcelona Gig Guide agrège les programmes publics d'Eventbrite, de Ticketmaster, des calendriers officiels des salles et de l'agenda culturel de la mairie de Barcelone (CC BY 4.0). Ce site n'est ni affilié, ni approuvé, ni exploité par ces plateformes. Les billets et les détails complets sont gérés par l'annonce d'origine — suivez le lien de chaque événement pour réserver.",
   privacyLink: "Politique de confidentialité",
   footerTag: "Visca la música.",
   language: "Langue",
@@ -600,7 +604,7 @@ const fr: Messages = {
   eventCountMany: "{count} événements",
   loadingMap: "Chargement de la carte…",
   emptyTitle: "Aucun événement à venir pour le moment",
-  emptyBody: "Revenez bientôt — le programme est actualisé chaque jour depuis Eventbrite, Ticketmaster et l'agenda municipal.",
+  emptyBody: "Revenez bientôt — le programme est actualisé chaque jour depuis Eventbrite, Ticketmaster, les salles et l'agenda municipal.",
   noMatchTitle: "Aucun événement ne correspond à vos filtres",
   noMatchActive:
     "Essayez d'effacer la recherche, d'élargir les dates, de changer les genres, de désactiver Gratuit uniquement ou de réinitialiser les filtres.",
@@ -616,6 +620,7 @@ const fr: Messages = {
   viaEventbrite: "via Eventbrite",
   viaTicketmaster: "via Ticketmaster",
   viaOpenData: "via l'agenda de Barcelone",
+  viaVenue: "via la salle",
   viewTicketsAria: "{title} à {venue} — voir les billets",
   share: "Partager",
   shareAria: "Partager {title}",
@@ -632,7 +637,7 @@ const fr: Messages = {
   metaHomeTitle: "{count}+ concerts à Barcelone",
   metaHomeTitleEmpty: "Concerts à Barcelone",
   metaHomeDescription:
-    "Parcourez {count} concerts, soirées club, spectacles d'humour et festivals à Barcelone. Mis à jour chaque jour depuis Eventbrite, Ticketmaster et l'agenda municipal.",
+    "Parcourez {count} concerts, soirées club, spectacles d'humour et festivals à Barcelone. Mis à jour chaque jour depuis Eventbrite, Ticketmaster, les calendriers des salles et l'agenda municipal.",
   layoutTitle: "Barcelona Gig Guide | Concerts à Barcelone",
   backToGigs: "← Retour aux concerts",
   getTickets: "Obtenir des billets",
@@ -652,7 +657,7 @@ const fr: Messages = {
   privacyOverviewP1:
     "{site} ({url}) vous aide à découvrir la musique live, le stand-up, le clubbing et les festivals à Barcelone. Cette politique concerne notre site.",
   privacyOverviewP2:
-    "Vous n'avez pas besoin de créer un compte pour consulter les événements. Nous ne vendons pas de billets : l'achat se fait sur des sites tiers comme Eventbrite, Ticketmaster ou l'agenda municipal lorsque vous suivez le lien de l'annonce.",
+    "Vous n'avez pas besoin de créer un compte pour consulter les événements. Nous ne vendons pas de billets : l'achat se fait sur des sites tiers comme Eventbrite, Ticketmaster, l'agenda municipal ou les billetteries des salles lorsque vous suivez le lien de l'annonce.",
   privacyCollect: "Informations que nous collectons",
   privacyCollectListings:
     "Programme. Nous stockons et affichons des données d'événements publiques (titres, salles, dates, prix, images et liens) provenant de plateformes tierces. Ces informations ne sont pas des données personnelles vous concernant.",
@@ -669,7 +674,7 @@ const fr: Messages = {
   privacyThird: "Services tiers",
   privacyThirdIntro: "Nous faisons appel aux types de tiers suivants :",
   privacyThirdSources:
-    "Sources d'événements — Eventbrite, Ticketmaster et l'agenda open data de la mairie de Barcelone (pages de billets et de détails)",
+    "Sources d'événements — Eventbrite, Ticketmaster, les calendriers officiels des salles et l'agenda open data de la mairie de Barcelone (pages de billets et de détails)",
   privacyThirdHost: "Base de données et hébergement — Supabase et Vercel",
   privacyThirdAnalytics: "Analytique — Google Analytics (site uniquement)",
   privacyThirdMaps: "Cartes — tuiles OpenStreetMap / CARTO sur la carte des événements",
@@ -698,10 +703,10 @@ const de: Messages = {
   tagline: "Finde Live-Musik, Comedy, Clubnächte und Festivals in Barcelona.",
   upcomingCount: "{count} kommende Konzerte",
   demoBanner:
-    "Beispiel-Listings zum Stöbern. Verbinde Supabase sowie Eventbrite- und Ticketmaster-Keys und rufe /api/sync für Live-Daten auf.",
+    "Beispiel-Listings zum Stöbern. Verbinde Supabase sowie Eventbrite- und Ticketmaster-Keys und rufe /api/sync für Live-Daten auf. Die städtische Agenda und Venue-Kalender brauchen keine Extra-Keys.",
   listingsUpdated: "Programm aktualisiert {date}",
   footerDisclaimer:
-    "Barcelona Gig Guide aggregiert öffentliche Veranstaltungslisten von Eventbrite, Ticketmaster und der Kulturagenda der Stadt Barcelona (CC BY 4.0). Diese Website ist nicht mit diesen Plattformen verbunden, von ihnen unterstützt oder betrieben. Tickets und alle Details liegen beim Originalangebot — folge dem Link jeder Veranstaltung, um zu buchen.",
+    "Barcelona Gig Guide aggregiert öffentliche Veranstaltungslisten von Eventbrite, Ticketmaster, offiziellen Venue-Kalendern und der Kulturagenda der Stadt Barcelona (CC BY 4.0). Diese Website ist nicht mit diesen Plattformen verbunden, von ihnen unterstützt oder betrieben. Tickets und alle Details liegen beim Originalangebot — folge dem Link jeder Veranstaltung, um zu buchen.",
   privacyLink: "Datenschutz",
   footerTag: "Visca la música.",
   language: "Sprache",
@@ -738,7 +743,7 @@ const de: Messages = {
   eventCountMany: "{count} Events",
   loadingMap: "Karte wird geladen…",
   emptyTitle: "Derzeit keine kommenden Events",
-  emptyBody: "Schau bald wieder vorbei — das Programm wird täglich von Eventbrite, Ticketmaster und der städtischen Agenda aktualisiert.",
+  emptyBody: "Schau bald wieder vorbei — das Programm wird täglich von Eventbrite, Ticketmaster, Venue-Kalendern und der städtischen Agenda aktualisiert.",
   noMatchTitle: "Keine Events passen zu deinen Filtern",
   noMatchActive:
     "Versuch die Suche zu löschen, den Zeitraum zu erweitern, Genres anzupassen, Nur kostenlos auszuschalten oder die Filter zurückzusetzen.",
@@ -754,6 +759,7 @@ const de: Messages = {
   viaEventbrite: "über Eventbrite",
   viaTicketmaster: "über Ticketmaster",
   viaOpenData: "über Barcelona-Agenda",
+  viaVenue: "über den Veranstaltungsort",
   viewTicketsAria: "{title} in {venue} — Tickets ansehen",
   share: "Teilen",
   shareAria: "{title} teilen",
@@ -770,7 +776,7 @@ const de: Messages = {
   metaHomeTitle: "{count}+ Konzerte in Barcelona",
   metaHomeTitleEmpty: "Konzerte in Barcelona",
   metaHomeDescription:
-    "Entdecke {count} Konzerte, Clubnächte, Comedy-Shows und Festivals in Barcelona. Täglich aktualisiert von Eventbrite, Ticketmaster und der städtischen Agenda.",
+    "Entdecke {count} Konzerte, Clubnächte, Comedy-Shows und Festivals in Barcelona. Täglich aktualisiert von Eventbrite, Ticketmaster, Venue-Kalendern und der städtischen Agenda.",
   layoutTitle: "Barcelona Gig Guide | Konzerte in Barcelona",
   backToGigs: "← Zurück zu den Konzerten",
   getTickets: "Tickets holen",
@@ -790,7 +796,7 @@ const de: Messages = {
   privacyOverviewP1:
     "{site} ({url}) hilft dir, Live-Musik, Comedy, Clubbing und Festivals in Barcelona zu entdecken. Diese Erklärung gilt für unsere Website.",
   privacyOverviewP2:
-    "Du brauchst kein Konto, um Events zu durchsuchen. Wir verkaufen keine Tickets — Käufe finden auf Drittseiten wie Eventbrite, Ticketmaster oder der städtischen Agenda statt, wenn du dem Listing-Link folgst.",
+    "Du brauchst kein Konto, um Events zu durchsuchen. Wir verkaufen keine Tickets — Käufe finden auf Drittseiten wie Eventbrite, Ticketmaster, der städtischen Agenda oder Venue-Kassen statt, wenn du dem Listing-Link folgst.",
   privacyCollect: "Welche Informationen wir erfassen",
   privacyCollectListings:
     "Veranstaltungslisten. Wir speichern und zeigen öffentlich verfügbare Eventdaten (Titel, Locations, Daten, Preise, Bilder und Ticketlinks) von Drittplattformen. Das sind keine personenbezogenen Daten über dich.",
@@ -807,7 +813,7 @@ const de: Messages = {
   privacyThird: "Drittanbieter",
   privacyThirdIntro: "Wir greifen auf folgende Arten von Dritten zurück:",
   privacyThirdSources:
-    "Eventquellen — Eventbrite, Ticketmaster und die Open-Data-Agenda der Stadt Barcelona (Ticket- und Detailseiten)",
+    "Eventquellen — Eventbrite, Ticketmaster, offizielle Venue-Kalender und die Open-Data-Agenda der Stadt Barcelona (Ticket- und Detailseiten)",
   privacyThirdHost: "Datenbank und Hosting — Supabase und Vercel",
   privacyThirdAnalytics: "Analyse — Google Analytics (nur Website)",
   privacyThirdMaps: "Karten — OpenStreetMap-/CARTO-Kacheln auf der Eventkarte",

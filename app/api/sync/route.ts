@@ -3,12 +3,13 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import { fetchEventbriteEvents } from "@/lib/sources/eventbrite";
 import { fetchOpenDataEvents } from "@/lib/sources/opendata";
 import { fetchTicketmasterEvents } from "@/lib/sources/ticketmaster";
+import { fetchVenueEvents } from "@/lib/sources/venues";
 import { isGigRelevantEvent, normalizeForGigGuide } from "@/lib/gig-relevance";
 import { dedupeEvents } from "@/lib/dedupe";
 import { NormalizedEvent, EventSource } from "@/lib/types";
 
 export const dynamic = "force-dynamic"; // never statically cache a route that writes data
-export const maxDuration = 60; // seconds — source APIs + upsert can take a while
+export const maxDuration = 90; // seconds — venue calendars + source APIs + upsert
 
 const UPSERT_BATCH_SIZE = 200;
 
@@ -129,8 +130,9 @@ export async function GET(request: NextRequest) {
     let eventbriteEvents: NormalizedEvent[] = [];
     let ticketmasterEvents: NormalizedEvent[] = [];
     let openDataEvents: NormalizedEvent[] = [];
+    let venueEvents: NormalizedEvent[] = [];
 
-    const [eventbriteResult, ticketmasterResult, openDataResult] = await Promise.all([
+    const [eventbriteResult, ticketmasterResult, openDataResult, venueResult] = await Promise.all([
       process.env.EVENTBRITE_API_KEY
         ? fetchEventbriteEvents()
             .then((events) => ({ events, error: null as unknown }))
@@ -153,11 +155,18 @@ export async function GET(request: NextRequest) {
           console.error("Open Data BCN fetch failed:", error);
           return { events: [] as NormalizedEvent[], error };
         }),
+      fetchVenueEvents()
+        .then((events) => ({ events, error: null as unknown }))
+        .catch((error) => {
+          console.error("Venue calendar fetch failed:", error);
+          return { events: [] as NormalizedEvent[], error };
+        }),
     ]);
 
     eventbriteEvents = eventbriteResult.events;
     ticketmasterEvents = ticketmasterResult.events;
     openDataEvents = openDataResult.events;
+    venueEvents = venueResult.events;
 
     if (process.env.EVENTBRITE_API_KEY && eventbriteResult.error == null) {
       sourcesToClean.push("eventbrite");
@@ -168,15 +177,32 @@ export async function GET(request: NextRequest) {
     if (openDataResult.error == null) {
       sourcesToClean.push("opendata");
     }
+    if (venueResult.error == null) {
+      sourcesToClean.push("venue");
+    }
 
-    const combined = [...eventbriteEvents, ...ticketmasterEvents, ...openDataEvents];
+    const combined = [...eventbriteEvents, ...ticketmasterEvents, ...openDataEvents, ...venueEvents];
     const gigEvents = combined
       .map((event) => normalizeForGigGuide(event))
       .filter((event): event is NormalizedEvent => event !== null);
     const deduped = dedupeEvents(gigEvents).map((event) => ({ ...event, last_synced_at: syncedAt }));
-    const ticketed = deduped.filter((event) => event.source !== "opendata");
+    const partnered = deduped.filter(
+      (event) => event.source === "eventbrite" || event.source === "ticketmaster"
+    );
+    const venueListed = deduped.filter((event) => event.source === "venue");
     const civic = deduped.filter((event) => event.source === "opendata");
-    const upsertedTicketed = await upsertEvents(ticketed);
+    const upsertedPartnered = await upsertEvents(partnered);
+
+    let upsertedVenue = 0;
+    if (venueListed.length > 0) {
+      try {
+        upsertedVenue = await upsertEvents(venueListed);
+      } catch (error) {
+        console.error("Venue calendar upsert failed (run supabase/migrations/006_add_venue_source.sql):", error);
+        const venueIndex = sourcesToClean.indexOf("venue");
+        if (venueIndex >= 0) sourcesToClean.splice(venueIndex, 1);
+      }
+    }
 
     let upsertedCivic = 0;
     if (civic.length > 0) {
@@ -189,7 +215,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const upserted = upsertedTicketed + upsertedCivic;
+    const upserted = upsertedPartnered + upsertedVenue + upsertedCivic;
     const deletedPast = await deletePastEvents();
     const deletedDelisted = await deleteDelistedEvents(syncedAt, sourcesToClean);
     const deletedNonGig = await deleteNonGigEvents();
@@ -200,6 +226,7 @@ export async function GET(request: NextRequest) {
         eventbrite: eventbriteEvents.length,
         ticketmaster: ticketmasterEvents.length,
         opendata: openDataEvents.length,
+        venue: venueEvents.length,
       },
       deduped: deduped.length,
       upserted,

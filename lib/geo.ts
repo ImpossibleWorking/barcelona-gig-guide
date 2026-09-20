@@ -116,6 +116,11 @@ const METRO_VENUE_HINTS = [
   "comedy clubhouse",
   "ocaña",
   "ocana",
+  "marula",
+  "sala upload",
+  "la nau",
+  "club del disco",
+  "sala vol",
 ] as const;
 
 function inMetroBounds(latitude: number, longitude: number): boolean {

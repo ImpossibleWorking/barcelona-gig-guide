@@ -17,6 +17,72 @@ export function toTimeZoneWeekday(iso: string | Date): number {
   return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(weekday);
 }
 
+function zonedParts(instant: number, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(instant));
+  const value = (type: string) => Number(parts.find((part) => part.type === type)?.value);
+  return {
+    year: value("year"),
+    month: value("month"),
+    day: value("day"),
+    hour: value("hour"),
+    minute: value("minute"),
+    second: value("second"),
+  };
+}
+
+/**
+ * Convert a wall-clock time in `timeZone` to a UTC ISO string.
+ * Used by venue calendars that publish local dates without a timezone offset.
+ */
+export function zonedDateTimeToIso(
+  year: number,
+  month: number,
+  day: number,
+  hour = 20,
+  minute = 0,
+  second = 0,
+  timeZone = SITE_TIME_ZONE
+): string {
+  const utcGuess = Date.UTC(year, month - 1, day, hour, minute, second);
+  const actual = zonedParts(utcGuess, timeZone);
+  const actualUtc = Date.UTC(
+    actual.year,
+    actual.month - 1,
+    actual.day,
+    actual.hour,
+    actual.minute,
+    actual.second
+  );
+  return new Date(utcGuess + (utcGuess - actualUtc)).toISOString();
+}
+
+/** True when the event is dated but the clock looks like a date-only midnight placeholder. */
+export function isPlaceholderMidnight(iso: string): boolean {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: SITE_TIME_ZONE,
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date(iso))
+  );
+  const minute = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: SITE_TIME_ZONE,
+      minute: "2-digit",
+    }).format(new Date(iso))
+  );
+  return hour === 0 && minute === 0;
+}
+
 export function formatEventDateTime(iso: string, locale: Locale = "en"): string {
   return new Date(iso).toLocaleString(DATE_LOCALES[locale], {
     weekday: "short",
