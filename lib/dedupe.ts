@@ -1,3 +1,4 @@
+import { hasAffiliateCheckout } from "@/lib/affiliate";
 import { toTimeZoneDateString } from "@/lib/datetime";
 import { NormalizedEvent } from "@/lib/types";
 
@@ -36,11 +37,41 @@ function richness(event: NormalizedEvent): number {
   ).length;
 }
 
+function firstFilled<T>(primary: T, fallback: T): T {
+  if (primary === null || primary === undefined || primary === "") return fallback;
+  return primary;
+}
+
+/** Keep the winner's identity and checkout URL; fill gaps from the duplicate. */
+export function mergeDuplicateFields(winner: NormalizedEvent, loser: NormalizedEvent): NormalizedEvent {
+  return {
+    ...winner,
+    description: firstFilled(winner.description, loser.description),
+    image_url: firstFilled(winner.image_url, loser.image_url),
+    address: firstFilled(winner.address, loser.address),
+    latitude: winner.latitude ?? loser.latitude,
+    longitude: winner.longitude ?? loser.longitude,
+    price_min: winner.price_min ?? loser.price_min,
+    price_max: winner.price_max ?? loser.price_max,
+    end_datetime: firstFilled(winner.end_datetime, loser.end_datetime),
+    genre: winner.genre ?? loser.genre,
+  };
+}
+
 export function pickPreferredDuplicate(a: NormalizedEvent, b: NormalizedEvent): NormalizedEvent {
   const aVariant = isTicketVariantListing(a.title);
   const bVariant = isTicketVariantListing(b.title);
-  if (aVariant !== bVariant) return aVariant ? b : a;
-  return richness(b) > richness(a) ? b : a;
+  if (aVariant !== bVariant) {
+    return aVariant ? mergeDuplicateFields(b, a) : mergeDuplicateFields(a, b);
+  }
+
+  const aAffiliate = hasAffiliateCheckout(a);
+  const bAffiliate = hasAffiliateCheckout(b);
+  if (aAffiliate !== bAffiliate) {
+    return aAffiliate ? mergeDuplicateFields(a, b) : mergeDuplicateFields(b, a);
+  }
+
+  return richness(b) > richness(a) ? mergeDuplicateFields(b, a) : mergeDuplicateFields(a, b);
 }
 
 function titleDateKey(event: NormalizedEvent): string {

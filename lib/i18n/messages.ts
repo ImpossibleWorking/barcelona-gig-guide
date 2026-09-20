@@ -4,8 +4,8 @@ export type Messages = typeof en;
 
 const en = {
   brand: "Barcelona Gig Guide",
-  kicker: "Live music in Barcelona",
-  tagline: "Find live music, comedy, clubbing, and festivals across Barcelona.",
+  kicker: "Concerts and tickets in Barcelona",
+  tagline: "Find concerts, English comedy, jazz, and club nights in Barcelona this week — with ticket links.",
   upcomingCount: "{count} upcoming listings",
   demoBanner:
     "Showing sample listings so you can browse the guide. Connect Supabase plus Eventbrite and Ticketmaster keys, then hit /api/sync for live data. The city agenda and venue calendars need no extra keys.",
@@ -78,11 +78,11 @@ const en = {
   seriesEveryNightNext: "Every night · next {date}",
   seriesWeeklyNext: "Every {weekday} · next {date}",
   seriesSeveralNext: "Several nights · next {date}",
-  metaHomeTitle: "{count}+ Upcoming Gigs in Barcelona",
-  metaHomeTitleEmpty: "Live Gigs in Barcelona",
+  metaHomeTitle: "{count}+ Barcelona Concerts This Week",
+  metaHomeTitleEmpty: "Barcelona Concerts and Tickets",
   metaHomeDescription:
-    "Browse {count} upcoming gigs, club nights, comedy shows, and festivals in Barcelona. Updated daily from Eventbrite, Ticketmaster, official venue calendars, and the city agenda.",
-  layoutTitle: "Barcelona Gig Guide | Live Gigs in Barcelona",
+    "Browse {count} upcoming concerts, English comedy, jazz, and club nights in Barcelona. Ticket links updated daily from Eventbrite, Ticketmaster, Fever, official venue calendars, and the city agenda.",
+  layoutTitle: "Barcelona Concerts and Tickets | Gig Guide",
   backToGigs: "← Back to gigs",
   getTickets: "Get tickets",
   addToCalendar: "Add to calendar",
@@ -143,8 +143,8 @@ const en = {
 
 const es: Messages = {
   brand: "Barcelona Gig Guide",
-  kicker: "Música en directo en Barcelona",
-  tagline: "Encuentra música en directo, comedia, noches de club y festivales en Barcelona.",
+  kicker: "Conciertos y entradas en Barcelona",
+  tagline: "Encuentra conciertos, comedia, jazz y noches de club en Barcelona esta semana — con enlaces a entradas.",
   upcomingCount: "{count} próximos conciertos",
   demoBanner:
     "Mostrando ejemplos para que puedas explorar la guía. Conecta Supabase y las claves de Eventbrite y Ticketmaster, y llama a /api/sync para datos reales. La agenda municipal y las carteleras de las salas no necesitan claves extra.",
@@ -217,11 +217,11 @@ const es: Messages = {
   seriesEveryNightNext: "Todas las noches · próximo {date}",
   seriesWeeklyNext: "Cada {weekday} · próximo {date}",
   seriesSeveralNext: "Varias noches · próximo {date}",
-  metaHomeTitle: "{count}+ conciertos en Barcelona",
-  metaHomeTitleEmpty: "Conciertos en Barcelona",
+  metaHomeTitle: "{count}+ conciertos en Barcelona esta semana",
+  metaHomeTitleEmpty: "Conciertos y entradas en Barcelona",
   metaHomeDescription:
-    "Explora {count} conciertos, noches de club, comedia y festivales en Barcelona. Actualizado a diario desde Eventbrite, Ticketmaster, las carteleras de las salas y la agenda municipal.",
-  layoutTitle: "Barcelona Gig Guide | Conciertos en Barcelona",
+    "Explora {count} conciertos, comedia, jazz y noches de club en Barcelona. Enlaces a entradas actualizados a diario desde Eventbrite, Ticketmaster, Fever, las salas y la agenda municipal.",
+  layoutTitle: "Conciertos y entradas en Barcelona | Gig Guide",
   backToGigs: "← Volver a los conciertos",
   getTickets: "Conseguir entradas",
   addToCalendar: "Añadir al calendario",
@@ -282,8 +282,8 @@ const es: Messages = {
 
 const ca: Messages = {
   brand: "Barcelona Gig Guide",
-  kicker: "Música en directe a Barcelona",
-  tagline: "Troba música en directe, comèdia, nits de club i festivals a Barcelona.",
+  kicker: "Concerts i entrades a Barcelona",
+  tagline: "Troba concerts, comèdia, jazz i nits de club a Barcelona aquesta setmana — amb enllaços a les entrades.",
   upcomingCount: "{count} concerts pròxims",
   demoBanner:
     "Mostrem exemples perquè puguis explorar la guia. Connecta Supabase i les claus d'Eventbrite i Ticketmaster, i truca a /api/sync per a dades reals. L'agenda municipal i les cartelleres de les sales no necessiten claus extra.",
@@ -356,11 +356,11 @@ const ca: Messages = {
   seriesEveryNightNext: "Totes les nits · pròxim {date}",
   seriesWeeklyNext: "Cada {weekday} · pròxim {date}",
   seriesSeveralNext: "Diverses nits · pròxim {date}",
-  metaHomeTitle: "{count}+ concerts a Barcelona",
-  metaHomeTitleEmpty: "Concerts a Barcelona",
+  metaHomeTitle: "{count}+ concerts a Barcelona aquesta setmana",
+  metaHomeTitleEmpty: "Concerts i entrades a Barcelona",
   metaHomeDescription:
-    "Explora {count} concerts, nits de club, comèdia i festivals a Barcelona. Actualitzat diàriament des d'Eventbrite, Ticketmaster, les cartelleres de les sales i l'agenda municipal.",
-  layoutTitle: "Barcelona Gig Guide | Concerts a Barcelona",
+    "Explora {count} concerts, comèdia, jazz i nits de club a Barcelona. Enllaços a les entrades actualitzats diàriament des d'Eventbrite, Ticketmaster, Fever, les sales i l'agenda municipal.",
+  layoutTitle: "Concerts i entrades a Barcelona | Gig Guide",
   backToGigs: "← Torna als concerts",
   getTickets: "Aconseguir entrades",
   addToCalendar: "Afegir al calendari",
@@ -421,8 +421,8 @@ const ca: Messages = {
 
 const it: Messages = {
   brand: "Barcelona Gig Guide",
-  kicker: "Musica dal vivo a Barcellona",
-  tagline: "Trova concerti, stand-up, serate in club e festival a Barcellona.",
+  kicker: "Concerti e biglietti a Barcellona",
+  tagline: "Trova concerti, stand-up in inglese, jazz e serate in club a Barcellona questa settimana — con link ai biglietti.",
   upcomingCount: "{count} concerti in arrivo",
   demoBanner:
     "Mostriamo esempi per farti esplorare la guida. Collega Supabase e le chiavi di Eventbrite e Ticketmaster, poi chiama /api/sync per i dati reali. L'agenda comunale e i calendari dei locali non richiedono chiavi extra.",
@@ -495,11 +495,11 @@ const it: Messages = {
   seriesEveryNightNext: "Tutte le sere · prossimo {date}",
   seriesWeeklyNext: "Ogni {weekday} · prossimo {date}",
   seriesSeveralNext: "Più sere · prossimo {date}",
-  metaHomeTitle: "{count}+ concerti a Barcellona",
-  metaHomeTitleEmpty: "Concerti a Barcellona",
+  metaHomeTitle: "{count}+ concerti a Barcellona questa settimana",
+  metaHomeTitleEmpty: "Concerti e biglietti a Barcellona",
   metaHomeDescription:
-    "Esplora {count} concerti, serate in club, comedy e festival a Barcellona. Aggiornato ogni giorno da Eventbrite, Ticketmaster, i calendari dei locali e l'agenda comunale.",
-  layoutTitle: "Barcelona Gig Guide | Concerti a Barcellona",
+    "Sfoglia {count} concerti, comedy, jazz e serate in club a Barcellona. Link ai biglietti aggiornati ogni giorno da Eventbrite, Ticketmaster, Fever, i locali e l'agenda comunale.",
+  layoutTitle: "Concerti e biglietti a Barcellona | Gig Guide",
   backToGigs: "← Torna ai concerti",
   getTickets: "Prendi i biglietti",
   addToCalendar: "Aggiungi al calendario",
@@ -560,8 +560,8 @@ const it: Messages = {
 
 const fr: Messages = {
   brand: "Barcelona Gig Guide",
-  kicker: "Musique live à Barcelone",
-  tagline: "Trouvez concerts, stand-up, soirées club et festivals à Barcelone.",
+  kicker: "Concerts et billets à Barcelone",
+  tagline: "Trouvez concerts, stand-up anglais, jazz et soirées club à Barcelone cette semaine — avec liens vers les billets.",
   upcomingCount: "{count} concerts à venir",
   demoBanner:
     "Exemples affichés pour parcourir le guide. Connectez Supabase et les clés Eventbrite et Ticketmaster, puis appelez /api/sync pour les données en direct. L'agenda municipal et les calendriers des salles n'ont pas besoin de clés supplémentaires.",
@@ -634,11 +634,11 @@ const fr: Messages = {
   seriesEveryNightNext: "Tous les soirs · prochain {date}",
   seriesWeeklyNext: "Chaque {weekday} · prochain {date}",
   seriesSeveralNext: "Plusieurs soirs · prochain {date}",
-  metaHomeTitle: "{count}+ concerts à Barcelone",
-  metaHomeTitleEmpty: "Concerts à Barcelone",
+  metaHomeTitle: "{count}+ concerts à Barcelone cette semaine",
+  metaHomeTitleEmpty: "Concerts et billets à Barcelone",
   metaHomeDescription:
-    "Parcourez {count} concerts, soirées club, spectacles d'humour et festivals à Barcelone. Mis à jour chaque jour depuis Eventbrite, Ticketmaster, les calendriers des salles et l'agenda municipal.",
-  layoutTitle: "Barcelona Gig Guide | Concerts à Barcelone",
+    "Parcourez {count} concerts, stand-up, jazz et soirées club à Barcelone. Liens billets mis à jour chaque jour depuis Eventbrite, Ticketmaster, Fever, les salles et l'agenda municipal.",
+  layoutTitle: "Concerts et billets à Barcelone | Gig Guide",
   backToGigs: "← Retour aux concerts",
   getTickets: "Obtenir des billets",
   addToCalendar: "Ajouter au calendrier",
@@ -699,8 +699,8 @@ const fr: Messages = {
 
 const de: Messages = {
   brand: "Barcelona Gig Guide",
-  kicker: "Live-Musik in Barcelona",
-  tagline: "Finde Live-Musik, Comedy, Clubnächte und Festivals in Barcelona.",
+  kicker: "Konzerte und Tickets in Barcelona",
+  tagline: "Finde Konzerte, englische Comedy, Jazz und Clubnächte in Barcelona diese Woche — mit Ticket-Links.",
   upcomingCount: "{count} kommende Konzerte",
   demoBanner:
     "Beispiel-Listings zum Stöbern. Verbinde Supabase sowie Eventbrite- und Ticketmaster-Keys und rufe /api/sync für Live-Daten auf. Die städtische Agenda und Venue-Kalender brauchen keine Extra-Keys.",
@@ -773,11 +773,11 @@ const de: Messages = {
   seriesEveryNightNext: "Täglich · nächster {date}",
   seriesWeeklyNext: "Jeden {weekday} · nächster {date}",
   seriesSeveralNext: "Mehrere Abende · nächster {date}",
-  metaHomeTitle: "{count}+ Konzerte in Barcelona",
-  metaHomeTitleEmpty: "Konzerte in Barcelona",
+  metaHomeTitle: "{count}+ Konzerte in Barcelona diese Woche",
+  metaHomeTitleEmpty: "Konzerte und Tickets in Barcelona",
   metaHomeDescription:
-    "Entdecke {count} Konzerte, Clubnächte, Comedy-Shows und Festivals in Barcelona. Täglich aktualisiert von Eventbrite, Ticketmaster, Venue-Kalendern und der städtischen Agenda.",
-  layoutTitle: "Barcelona Gig Guide | Konzerte in Barcelona",
+    "Entdecke {count} Konzerte, Comedy, Jazz und Clubnächte in Barcelona. Ticket-Links täglich aktualisiert von Eventbrite, Ticketmaster, Fever, Venue-Kalendern und der städtischen Agenda.",
+  layoutTitle: "Konzerte und Tickets in Barcelona | Gig Guide",
   backToGigs: "← Zurück zu den Konzerten",
   getTickets: "Tickets holen",
   addToCalendar: "Zum Kalender hinzufügen",

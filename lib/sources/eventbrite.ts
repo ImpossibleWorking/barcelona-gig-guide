@@ -32,6 +32,9 @@ const BARCELONA_ORGANIZER_IDS: string[] = [
   "65168628333", // AMAFEST
   "121510317606", // Célebre Cabaret
   "67082492253", // Quiziera
+  "80412110973", // Club Cantabrico Jazz
+  "115881796841", // Plácido y Grata (jazz & cocktails)
+  "35214527173", // Miquel Llobet (guitar concerts)
   // Comedy
   "58689016343", // The Comedy Clubhouse BCN
   "60403957483", // Secret Comedy Club
@@ -55,6 +58,9 @@ const BARCELONA_ORGANIZER_IDS: string[] = [
   "71143058633", // Fury (hard techno)
   "69001874533", // Moods (W Barcelona Noxe)
   "89901525123", // RUMBON Latin Party
+  "29395879773", // Happy Techno Music (La Terrrazza / Sónar week)
+  "13632975456", // we sounds events (open-air electronic)
+  "120620452853", // Meliá Barcelona Sky (rooftop DJ / live)
 ];
 
 const EVENTBRITE_BASE_URL = "https://www.eventbriteapi.com/v3";

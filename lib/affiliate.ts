@@ -32,6 +32,19 @@ function hostnameOf(url: string): string | null {
   }
 }
 
+/** True when /go/[id] can wrap this listing with Impact (Eventbrite, Ticketmaster, or Fever). */
+export function hasAffiliateCheckout(event: Pick<NormalizedEvent, "source" | "source_url">): boolean {
+  if (event.source === "eventbrite" || event.source === "ticketmaster") return true;
+  const host = hostnameOf(event.source_url);
+  if (!host) return false;
+  return (
+    host.includes("eventbrite.") ||
+    host.includes("ticketmaster.") ||
+    host === "feverup.com" ||
+    host.endsWith(".feverup.com")
+  );
+}
+
 function wrapWithAffiliateBase(url: string, base: string | undefined): string {
   if (!isUsableAffiliateBase(base) || isAlreadyAffiliateWrapped(url) || !base) return url;
   const trimmed = base.trim();
