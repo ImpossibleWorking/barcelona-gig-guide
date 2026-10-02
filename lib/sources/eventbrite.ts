@@ -1,4 +1,6 @@
 import { EventGenre, NormalizedEvent } from "@/lib/types";
+import { toTimeZoneWeekday } from "@/lib/datetime";
+import { canonicalEventTitle, normalizeForDedup } from "@/lib/dedupe";
 import { isBarcelonaMetroLocation } from "@/lib/geo";
 import { normalizeForGigGuide } from "@/lib/gig-relevance";
 
@@ -21,6 +23,15 @@ const BARCELONA_ORGANIZER_IDS: string[] = [
   "115618506621", // El Duende by Tablao Cordobes
   "58869923893", // BYRON Live Concerts
   "26919582185", // MUV Banda (Marula Café)
+  "49556785093", // Casa Astor
+  "111073976041", // Sala Vivaldi
+  "121656091933", // WIP RECORDS
+  "23421715321", // Royal Jelly Music
+  "109686430741", // Carlos Montoya
+  "121604273727", // Rajnandini Music
+  "65168628333", // AMAFEST
+  "121510317606", // Célebre Cabaret
+  "67082492253", // Quiziera
   // Comedy
   "58689016343", // The Comedy Clubhouse BCN
   "60403957483", // Secret Comedy Club
@@ -31,6 +42,9 @@ const BARCELONA_ORGANIZER_IDS: string[] = [
   "76451167103", // TBC Improv Spain
   "56880907563", // Barcelona Improv Group
   "76630050583", // Jokes & Beers
+  "19913660638", // the Comedy Nomad
+  "47480774033", // Antonio Lorente Comedy
+  "61244268773", // AtoMIC Comedy
   // Clubs & promoters
   "112953763081", // VICE UNIVERSE
   "121158035775", // Colors Club
@@ -51,6 +65,7 @@ const COMEDY_TITLE_PATTERN =
   /\b(comedy|comedia|stand[\s-]?up|standup|comedian|c[oó]mico|mon[oó]logo)\b/i;
 
 const MAX_PAGES_PER_ORGANIZER = 5; // safety cap
+const ORGANIZER_CONCURRENCY = 6;
 
 interface EventbriteMoney {
   currency: string;
@@ -154,20 +169,12 @@ function mapEventbriteEvent(event: EventbriteEvent): NormalizedEvent | null {
   };
 }
 
-function normalizeForRecurringDedup(value: string): string {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s]/g, "")
-    .replace(/\s+/g, " ");
-}
-
 function dedupeRecurringEventbriteEvents(events: NormalizedEvent[]): NormalizedEvent[] {
   const byKey = new Map<string, NormalizedEvent>();
 
   for (const event of events) {
-    const weekday = new Date(event.start_datetime).getUTCDay();
-    const key = `${normalizeForRecurringDedup(event.title)}|${normalizeForRecurringDedup(event.venue_name)}|${weekday}`;
+    const weekday = toTimeZoneWeekday(event.start_datetime);
+    const key = `${canonicalEventTitle(event.title)}|${normalizeForDedup(event.venue_name)}|${weekday}`;
     const existing = byKey.get(key);
     if (!existing || event.start_datetime < existing.start_datetime) {
       byKey.set(key, event);
@@ -232,16 +239,28 @@ export async function fetchEventbriteEvents(): Promise<NormalizedEvent[]> {
     return [];
   }
 
+  const apiToken = token;
   const allEvents: NormalizedEvent[] = [];
+  let nextIndex = 0;
 
-  for (const organizerId of BARCELONA_ORGANIZER_IDS) {
-    try {
-      const events = await fetchEventsForOrganizer(token, organizerId);
-      allEvents.push(...events);
-    } catch (error) {
-      console.error(`Failed to fetch Eventbrite events for organizer ${organizerId}:`, error);
+  async function worker() {
+    while (nextIndex < BARCELONA_ORGANIZER_IDS.length) {
+      const organizerId = BARCELONA_ORGANIZER_IDS[nextIndex++];
+      if (!organizerId) continue;
+      try {
+        const events = await fetchEventsForOrganizer(apiToken, organizerId);
+        allEvents.push(...events);
+      } catch (error) {
+        console.error(`Failed to fetch Eventbrite events for organizer ${organizerId}:`, error);
+      }
     }
   }
+
+  await Promise.all(
+    Array.from({ length: Math.min(ORGANIZER_CONCURRENCY, BARCELONA_ORGANIZER_IDS.length) }, () =>
+      worker()
+    )
+  );
 
   const seen = new Set<string>();
   const dedupedById = allEvents.filter((event) => {

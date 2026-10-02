@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/components/I18nProvider";
-import { NormalizedEvent } from "@/lib/types";
+import { ListedEvent } from "@/lib/types";
 import EventCard from "./EventCard";
 
 export default function EventGrid({
@@ -9,7 +9,7 @@ export default function EventGrid({
   totalEvents,
   hasActiveFilters,
 }: {
-  events: NormalizedEvent[];
+  events: ListedEvent[];
   totalEvents: number;
   hasActiveFilters: boolean;
 }) {

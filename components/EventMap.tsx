@@ -4,16 +4,18 @@ import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { getOutboundPath } from "@/lib/affiliate";
-import { formatEventDateTime } from "@/lib/datetime";
+import { trackTicketClick } from "@/lib/analytics";
+import { getEventPath } from "@/lib/seo";
 import { formatEventPrice } from "@/lib/format-event-price";
+import { formatListedEventDate } from "@/lib/format-listed-event";
 import { MAP_CENTER } from "@/lib/geo";
 import { Locale } from "@/lib/i18n/config";
 import { Messages } from "@/lib/i18n/messages";
-import { NormalizedEvent } from "@/lib/types";
+import { ListedEvent } from "@/lib/types";
 
 function hasCoordinates(
-  event: NormalizedEvent
-): event is NormalizedEvent & { latitude: number; longitude: number } {
+  event: ListedEvent
+): event is ListedEvent & { latitude: number; longitude: number } {
   return event.latitude != null && event.longitude != null;
 }
 
@@ -26,23 +28,26 @@ function escapeHtml(value: string): string {
 }
 
 function buildPopupHtml(
-  event: NormalizedEvent,
+  event: ListedEvent,
   locale: Locale,
-  t: (key: keyof Messages) => string
+  t: (key: keyof Messages, vars?: Record<string, string | number>) => string
 ): string {
-  const href = escapeHtml(getOutboundPath(event.id));
+  const eventHref = escapeHtml(getEventPath(event.id));
+  const ticketHref = escapeHtml(getOutboundPath(event.id));
   const title = escapeHtml(event.title);
   const venue = escapeHtml(event.venue_name);
-  const date = escapeHtml(formatEventDateTime(event.start_datetime, locale));
+  const date = escapeHtml(formatListedEventDate(event, locale, t));
   const price = escapeHtml(formatEventPrice(event, locale, t));
   const listing = escapeHtml(t("viewListing"));
+  const tickets = escapeHtml(t("getTickets"));
 
   return `
     <div class="gig-map-popup">
       <p class="gig-map-popup-title">${title}</p>
       <p class="gig-map-popup-meta">${venue}</p>
       <p class="gig-map-popup-meta">${date} · ${price}</p>
-      <a class="gig-map-popup-link" href="${href}" target="_blank" rel="noopener noreferrer">${listing}</a>
+      <a class="gig-map-popup-link" href="${eventHref}">${listing}</a>
+      <a class="gig-map-popup-link gig-map-popup-tickets" href="${ticketHref}" target="_blank" rel="noopener noreferrer" data-event-id="${escapeHtml(event.id)}" data-event-title="${title}" data-event-source="${escapeHtml(event.source)}" data-event-venue="${venue}">${tickets}</a>
     </div>
   `;
 }
@@ -81,7 +86,7 @@ export default function EventMap({
   hasActiveFilters,
   isVisible,
 }: {
-  events: NormalizedEvent[];
+  events: ListedEvent[];
   totalEvents: number;
   hasActiveFilters: boolean;
   isVisible: boolean;
@@ -159,6 +164,25 @@ export default function EventMap({
 
     return () => cancelAnimationFrame(frame);
   }, [isVisible, mapReady, eventKey]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onClick = (click: MouseEvent) => {
+      const link = (click.target as HTMLElement | null)?.closest("a.gig-map-popup-tickets");
+      if (!link) return;
+      trackTicketClick({
+        id: link.getAttribute("data-event-id") ?? "",
+        title: link.getAttribute("data-event-title") ?? "",
+        source: (link.getAttribute("data-event-source") ?? "opendata") as ListedEvent["source"],
+        venue_name: link.getAttribute("data-event-venue") ?? "",
+      });
+    };
+
+    container.addEventListener("click", onClick);
+    return () => container.removeEventListener("click", onClick);
+  }, [isVisible, mapReady]);
 
   if (events.length === 0) {
     return <MapEmptyState totalEvents={totalEvents} hasActiveFilters={hasActiveFilters} />;

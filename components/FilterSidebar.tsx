@@ -1,7 +1,9 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import { EventGenre } from "@/lib/types";
 import { useI18n } from "@/components/I18nProvider";
+import { DatePreset, getDatePresetRange } from "@/lib/datetime";
 import { Messages } from "@/lib/i18n/messages";
 
 export interface Filters {
@@ -47,64 +49,15 @@ export function hasActiveFilters(filters: Filters): boolean {
   );
 }
 
-type DatePreset = "tonight" | "weekend" | "week";
-
 const DATE_PRESETS: { id: DatePreset }[] = [
   { id: "tonight" },
   { id: "weekend" },
   { id: "week" },
 ];
 
-function toLocalDateString(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function getDateRangeForPreset(preset: DatePreset): { dateFrom: string; dateTo: string } {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (preset === "tonight") {
-    const date = toLocalDateString(today);
-    return { dateFrom: date, dateTo: date };
-  }
-
-  if (preset === "weekend") {
-    const day = today.getDay();
-    let saturday: Date;
-    let sunday: Date;
-
-    if (day === 6) {
-      saturday = today;
-      sunday = new Date(today);
-      sunday.setDate(today.getDate() + 1);
-    } else if (day === 0) {
-      saturday = new Date(today);
-      saturday.setDate(today.getDate() - 1);
-      sunday = today;
-    } else {
-      saturday = new Date(today);
-      saturday.setDate(today.getDate() + (6 - day));
-      sunday = new Date(saturday);
-      sunday.setDate(saturday.getDate() + 1);
-    }
-
-    return { dateFrom: toLocalDateString(saturday), dateTo: toLocalDateString(sunday) };
-  }
-
-  const day = today.getDay();
-  const daysUntilSunday = day === 0 ? 0 : 7 - day;
-  const sunday = new Date(today);
-  sunday.setDate(today.getDate() + daysUntilSunday);
-
-  return { dateFrom: toLocalDateString(today), dateTo: toLocalDateString(sunday) };
-}
-
 function activeDatePreset(filters: Filters): DatePreset | null {
   for (const { id } of DATE_PRESETS) {
-    const range = getDateRangeForPreset(id);
+    const range = getDatePresetRange(id);
     if (filters.dateFrom === range.dateFrom && filters.dateTo === range.dateTo) {
       return id;
     }
@@ -120,6 +73,42 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Keep the sticky sidebar inside the visible viewport so it can scroll. */
+function useFitSidebarToViewport() {
+  const ref = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const desktop = window.matchMedia("(min-width: 1024px)");
+
+    const fit = () => {
+      if (!desktop.matches) {
+        el.style.maxHeight = "";
+        return;
+      }
+
+      const top = el.getBoundingClientRect().top;
+      const bottomGap = 16;
+      el.style.maxHeight = `${Math.max(240, Math.floor(window.innerHeight - top - bottomGap))}px`;
+    };
+
+    fit();
+    window.addEventListener("scroll", fit, { passive: true });
+    window.addEventListener("resize", fit);
+    desktop.addEventListener("change", fit);
+
+    return () => {
+      window.removeEventListener("scroll", fit);
+      window.removeEventListener("resize", fit);
+      desktop.removeEventListener("change", fit);
+    };
+  }, []);
+
+  return ref;
+}
+
 export default function FilterSidebar({
   filters,
   onChange,
@@ -128,6 +117,7 @@ export default function FilterSidebar({
   onChange: (filters: Filters) => void;
 }) {
   const { t } = useI18n();
+  const sidebarRef = useFitSidebarToViewport();
   const genreLabels: Record<EventGenre, string> = {
     "live-music": t("liveMusic"),
     clubbing: t("clubbing"),
@@ -152,7 +142,10 @@ export default function FilterSidebar({
   };
 
   return (
-    <aside className="brand-panel sticky top-6 max-h-[calc(100dvh-3rem)] space-y-6 overflow-y-auto overscroll-y-contain p-5">
+    <aside
+      ref={sidebarRef}
+      className="filter-scroll brand-panel space-y-6 overflow-y-auto overscroll-y-contain p-5 lg:sticky lg:top-6 lg:w-72 lg:flex-shrink-0 lg:self-start lg:max-h-[calc(100dvh-3rem)]"
+    >
       <div>
         <SectionLabel>{t("search")}</SectionLabel>
         <input
@@ -178,7 +171,7 @@ export default function FilterSidebar({
                     onChange({ ...filters, dateFrom: "", dateTo: "" });
                     return;
                   }
-                  onChange({ ...filters, ...getDateRangeForPreset(id) });
+                  onChange({ ...filters, ...getDatePresetRange(id) });
                 }}
                 className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                   active

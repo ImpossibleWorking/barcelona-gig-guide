@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { dedupeEvents } from "@/lib/dedupe";
-import { getDemoEvents } from "@/lib/demo-events";
+import { findDemoEvent, getDemoEvents } from "@/lib/demo-events";
 import { isGigRelevantEvent } from "@/lib/gig-relevance";
 import { getSupabase } from "@/lib/supabase";
 import { NormalizedEvent } from "@/lib/types";
@@ -39,6 +39,25 @@ export const getUpcomingEvents = cache(async (): Promise<NormalizedEvent[]> => {
   } catch (error) {
     console.error("Failed to load events:", error);
     return [];
+  }
+});
+
+/** Single listing for event pages and /go fallbacks. */
+export const getEventById = cache(async (id: string): Promise<NormalizedEvent | null> => {
+  if (isDemoDataEnabled()) {
+    return findDemoEvent(id);
+  }
+
+  try {
+    const { data, error } = await getSupabase().from("events").select("*").eq("id", id).maybeSingle();
+    if (error) {
+      console.error("Failed to load event:", error);
+      return null;
+    }
+    return data ? (data as NormalizedEvent) : null;
+  } catch (error) {
+    console.error("Failed to load event:", error);
+    return null;
   }
 });
 

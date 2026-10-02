@@ -4,6 +4,7 @@ import EventsExplorer from "@/components/EventsExplorer";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import { getLastSyncedAt, getUpcomingEvents, isDemoDataEnabled } from "@/lib/events";
+import { collapseRecurringSeries } from "@/lib/recurring";
 import { getLocale, getMessages } from "@/lib/i18n/get-locale";
 import { interpolate } from "@/lib/i18n/messages";
 import { SITE_NAME, absoluteUrl, OG_IMAGE_PATH } from "@/lib/seo";
@@ -14,7 +15,7 @@ export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const events = await getUpcomingEvents();
-  const count = events.length;
+  const count = collapseRecurringSeries(events).length;
   const copy = getMessages(getLocale());
   const title =
     count > 0
@@ -45,15 +46,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const events = await getUpcomingEvents();
+  const listedEvents = collapseRecurringSeries(events);
   const lastSyncedAt = getLastSyncedAt(events);
   const locale = getLocale();
   const copy = getMessages(locale);
 
   return (
     <>
-      <StructuredData data={buildHomeStructuredData(events, locale, copy)} />
+      <StructuredData data={buildHomeStructuredData(listedEvents, locale, copy)} />
       <main className="flex min-h-screen flex-col bg-brand-gradient">
-        <SiteHeader eventCount={events.length} isDemo={isDemoDataEnabled()} />
+        <SiteHeader eventCount={listedEvents.length} isDemo={isDemoDataEnabled()} />
         <EventsExplorer events={events} />
         <SiteFooter lastSyncedAt={lastSyncedAt} />
       </main>

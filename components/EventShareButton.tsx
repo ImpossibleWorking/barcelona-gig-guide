@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
-import { getOutboundUrl } from "@/lib/affiliate";
+import { getEventUrl } from "@/lib/seo";
 
 export default function EventShareButton({
   eventId,
@@ -13,7 +13,7 @@ export default function EventShareButton({
 }) {
   const { t } = useI18n();
   const [status, setStatus] = useState<"idle" | "copied">("idle");
-  const shareUrl = getOutboundUrl(eventId);
+  const shareUrl = getEventUrl(eventId);
 
   async function handleShare(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();

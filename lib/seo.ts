@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/site";
 export const SITE_NAME = "Barcelona Gig Guide";
 
 export const SITE_DESCRIPTION =
-  "Discover live music, comedy, club nights, and festivals in Barcelona. Updated daily from Eventbrite and Ticketmaster.";
+  "Discover live music, comedy, club nights, and festivals in Barcelona. Updated daily from Eventbrite, Ticketmaster, and the city agenda.";
 
 export const SITE_KEYWORDS = [
   "Barcelona gigs",
@@ -23,4 +23,13 @@ export const OG_IMAGE_PATH = "/logo.png";
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE_URL).toString();
+}
+
+/** Indexable event page (not the affiliate /go hop). */
+export function getEventPath(eventId: string): string {
+  return `/e/${encodeURIComponent(eventId)}`;
+}
+
+export function getEventUrl(eventId: string, siteUrl = SITE_URL): string {
+  return `${siteUrl.replace(/\/$/, "")}${getEventPath(eventId)}`;
 }

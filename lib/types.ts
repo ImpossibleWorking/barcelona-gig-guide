@@ -1,7 +1,7 @@
 // Shared types for the normalized event schema used across source fetchers,
 // the sync route, and the frontend.
 
-export type EventSource = "eventbrite" | "ticketmaster";
+export type EventSource = "eventbrite" | "ticketmaster" | "opendata";
 
 // Fixed genre set that both source fetchers normalize into.
 export type EventGenre = "live-music" | "clubbing" | "festival" | "comedy" | "other";
@@ -25,3 +25,10 @@ export interface NormalizedEvent {
   image_url: string | null;
   last_synced_at: string; // ISO 8601
 }
+
+/** Display-only: nightly / weekly series collapsed to the next matching date. */
+export type SeriesKind = "every-night" | "weekly" | "several";
+
+export type ListedEvent = NormalizedEvent & {
+  seriesKind?: SeriesKind;
+};
