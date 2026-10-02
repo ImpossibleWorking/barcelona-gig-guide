@@ -23,6 +23,7 @@ const SOURCE_KEYS: Record<string, keyof Messages> = {
   eventbrite: "viaEventbrite",
   ticketmaster: "viaTicketmaster",
   opendata: "viaOpenData",
+  venue: "viaVenue",
 };
 
 export default function EventCard({ event }: { event: ListedEvent }) {

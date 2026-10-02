@@ -71,8 +71,8 @@ export function getDemoEvents(): NormalizedEvent[] {
     },
     {
       id: "demo_apolo_live",
-      source: "ticketmaster",
-      source_url: "https://www.sala-apolo.com/",
+      source: "venue",
+      source_url: "https://www.sala-apolo.com/es/agenda",
       title: "Live at Sala Apolo",
       description: "Touring bands and club nights in Poble-sec's landmark room.",
       venue_name: "Sala Apolo",

@@ -1,7 +1,7 @@
 // Shared types for the normalized event schema used across source fetchers,
 // the sync route, and the frontend.
 
-export type EventSource = "eventbrite" | "ticketmaster" | "opendata";
+export type EventSource = "eventbrite" | "ticketmaster" | "opendata" | "venue";
 
 // Fixed genre set that both source fetchers normalize into.
 export type EventGenre = "live-music" | "clubbing" | "festival" | "comedy" | "other";

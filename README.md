@@ -1,6 +1,6 @@
 # Barcelona Gig Guide
 
-Lists live music, clubbing, comedy, and festival events in Barcelona, aggregated from Eventbrite, Ticketmaster, and the Ajuntament de Barcelona cultural agenda.
+Lists live music, clubbing, comedy, and festival events in Barcelona, aggregated from Eventbrite, Ticketmaster, official venue calendars, and the Ajuntament de Barcelona cultural agenda.
 
 Without API keys the site runs with sample listings so you can browse the UI immediately.
 
@@ -13,19 +13,19 @@ Without API keys the site runs with sample listings so you can browse the UI imm
    - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — from your Supabase project's API settings
    - `SUPABASE_SERVICE_ROLE_KEY` — same page, used server-only by `/api/sync`
    - `CRON_SECRET` — any random string; optional locally, recommended in production
-   - `EVENTBRITE_AFFILIATE_BASE` / `TICKETMASTER_AFFILIATE_BASE` — optional Impact tracking bases ending in `?u=` so `/go/[id]` deep-links ticket pages. Ticketmaster requires joining their [global affiliate programme](https://developer.ticketmaster.com/partners/distribution-partners/affiliate-sign-up/) (Spain is included) via Impact first.
-3. **Eventbrite organizer IDs**: Eventbrite has no free-text location search, so `lib/sources/eventbrite.ts` queries a hardcoded list of Barcelona venues and promoters. Add more IDs there as you find them (`eventbrite.es/o/{slug}-{organizer_id}`).
+   - `EVENTBRITE_AFFILIATE_BASE` / `TICKETMASTER_AFFILIATE_BASE` / `FEVER_AFFILIATE_BASE` — optional Impact tracking bases ending in `?u=` so `/go/[id]` deep-links ticket pages. Wrapping is by **checkout host**, so a Jamboree listing that sells on Eventbrite or Fever still earns. Ticketmaster requires joining their [global affiliate programme](https://developer.ticketmaster.com/partners/distribution-partners/affiliate-sign-up/) (Spain is included) via Impact first; Fever is at their [affiliate programme](https://business.feverup.com/en/partner-programs/affiliate-program/). Onebox, Entradium, Dice, and venue-owned pages have no public cookie-affiliate wrap — those need a sales-channel contract (Onebox: `channels@oneboxtds.com`) if you want commission there.
+3. **Eventbrite organizer IDs**: Eventbrite has no free-text location search, so `lib/sources/eventbrite.ts` queries a hardcoded list of Barcelona venues and promoters (comedy rooms, jazz bars, club nights). Add more IDs there as you find them (`eventbrite.es/o/{slug}-{organizer_id}`). When the same night is listed on Eventbrite/Ticketmaster/Fever **and** a venue calendar, sync keeps the affiliate checkout URL and fills missing image/price fields from the other listing.
 4. Run `npm install` then `npm run dev`, and open [http://localhost:3000](http://localhost:3000).
 
 ## Syncing events
 
-`GET /api/sync` fetches from Eventbrite, Ticketmaster, and the city open-data agenda, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it daily via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var).
+`GET /api/sync` fetches from Eventbrite, Ticketmaster, official venue calendars, and the city open-data agenda, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it daily via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var).
 
-The city agenda needs no API key. After adding the `opendata` source, run [`supabase/migrations/005_add_opendata_source.sql`](supabase/migrations/005_add_opendata_source.sql) in the Supabase SQL editor if the project was created from an older schema.
+Venue calendars and the city agenda need no extra API keys. After adding sources, run [`supabase/migrations/005_add_opendata_source.sql`](supabase/migrations/005_add_opendata_source.sql) and [`supabase/migrations/006_add_venue_source.sql`](supabase/migrations/006_add_venue_source.sql) in the Supabase SQL editor if the project was created from an older schema.
 
 ## Structure
 
-- `lib/sources/eventbrite.ts`, `lib/sources/ticketmaster.ts`, `lib/sources/opendata.ts` — fetch + normalize events from each source
+- `lib/sources/eventbrite.ts`, `lib/sources/ticketmaster.ts`, `lib/sources/opendata.ts`, `lib/sources/venues.ts` — fetch + normalize events from each source
 - `lib/geo.ts` — Barcelona metro bounding box, neighbourhoods, and venue hints
 - `app/api/sync/route.ts` — dedupes and upserts normalized events into Supabase
 - `app/page.tsx` — server-fetches upcoming events for a 90-day window
