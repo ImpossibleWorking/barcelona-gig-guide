@@ -9,9 +9,10 @@ import { getLocale, getMessages } from "@/lib/i18n/get-locale";
 import { interpolate } from "@/lib/i18n/messages";
 import { SITE_NAME, absoluteUrl, OG_IMAGE_PATH } from "@/lib/seo";
 import { buildHomeStructuredData } from "@/lib/structured-data";
+import { PAGE_REVALIDATE_SECONDS } from "@/lib/cache";
 import { SITE_URL } from "@/lib/site";
 
-export const revalidate = 300;
+export const revalidate = PAGE_REVALIDATE_SECONDS;
 
 export async function generateMetadata(): Promise<Metadata> {
   const events = await getUpcomingEvents();

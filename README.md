@@ -19,7 +19,7 @@ Without API keys the site runs with sample listings so you can browse the UI imm
 
 ## Syncing events
 
-`GET /api/sync` fetches from Eventbrite, Ticketmaster, official venue calendars, and the city open-data agenda, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it daily via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var).
+`GET /api/sync` fetches from Eventbrite, Ticketmaster, official venue calendars, and the city open-data agenda, keeps only Barcelona-metro listings, dedupes overlapping shows, and upserts into Supabase. Trigger it manually while developing, or let [`vercel.json`](vercel.json) run it **once a day** (06:00 UTC) via Vercel Cron once deployed (Vercel automatically sends `Authorization: Bearer $CRON_SECRET` to cron requests when `CRON_SECRET` is set as a project env var). Pages ISR for an hour; generated OG images cache for a day — see [`lib/cache.ts`](lib/cache.ts).
 
 Venue calendars and the city agenda need no extra API keys. After adding sources, run [`supabase/migrations/005_add_opendata_source.sql`](supabase/migrations/005_add_opendata_source.sql) and [`supabase/migrations/006_add_venue_source.sql`](supabase/migrations/006_add_venue_source.sql) in the Supabase SQL editor if the project was created from an older schema.
 
