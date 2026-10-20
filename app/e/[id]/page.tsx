@@ -18,9 +18,10 @@ import { getLocale, getMessages } from "@/lib/i18n/get-locale";
 import { interpolate } from "@/lib/i18n/messages";
 import { getRelatedListings } from "@/lib/related-events";
 import { SITE_NAME, absoluteUrl, getEventPath } from "@/lib/seo";
+import { PAGE_REVALIDATE_SECONDS } from "@/lib/cache";
 import { buildEventPageStructuredData } from "@/lib/structured-data";
 
-export const revalidate = 300;
+export const revalidate = PAGE_REVALIDATE_SECONDS;
 
 export async function generateMetadata({
   params,

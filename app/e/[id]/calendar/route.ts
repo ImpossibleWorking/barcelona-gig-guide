@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { CALENDAR_REVALIDATE_SECONDS } from "@/lib/cache";
 import { buildEventIcs } from "@/lib/calendar";
 import { getEventById } from "@/lib/events";
 
-export const revalidate = 300;
+export const revalidate = CALENDAR_REVALIDATE_SECONDS;
 
 function safeFilename(title: string): string {
   const slug = title
@@ -28,7 +29,7 @@ export async function GET(
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
       "Content-Disposition": `attachment; filename="${safeFilename(event.title)}"`,
-      "Cache-Control": "public, max-age=300",
+      "Cache-Control": `public, max-age=${CALENDAR_REVALIDATE_SECONDS}`,
     },
   });
 }

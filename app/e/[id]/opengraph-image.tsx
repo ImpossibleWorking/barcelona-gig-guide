@@ -1,14 +1,20 @@
 import { ImageResponse } from "next/og";
+import { redirect } from "next/navigation";
+import { OG_IMAGE_REVALIDATE_SECONDS } from "@/lib/cache";
 import { formatEventDateTime } from "@/lib/datetime";
 import { getEventById } from "@/lib/events";
 
 export const alt = "Barcelona Gig Guide";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const revalidate = 300;
+export const revalidate = OG_IMAGE_REVALIDATE_SECONDS;
 
 export default async function Image({ params }: { params: { id: string } }) {
   const event = await getEventById(decodeURIComponent(params.id));
+  if (event?.image_url) {
+    redirect(event.image_url);
+  }
+
   const title = event?.title ?? "Barcelona Gig Guide";
   const venue = event?.venue_name ?? "Barcelona";
   const date = event ? formatEventDateTime(event.start_datetime, "en") : "";
