@@ -23,12 +23,35 @@ export function canonicalEventTitle(title: string): string {
   return normalizeForDedup(stripTicketVariantSuffix(title));
 }
 
+/**
+ * Collapse room aliases so Ticketmaster "Apolo" and the venue calendar
+ * "Sala Apolo" (or Nitsa / La 2) count as the same place for a given night.
+ */
+export function canonicalVenueName(name: string): string {
+  const normalized = normalizeForDedup(name);
+
+  if (/\b(nitsa|apolo)\b/.test(normalized) || /\bla 2\b/.test(normalized)) return "sala apolo";
+  if (/\bjamboree\b/.test(normalized)) return "jamboree";
+  if (/\bupload\b/.test(normalized)) return "sala upload";
+  if (/\bmarula\b/.test(normalized)) return "marula cafe";
+  if (/\bharlem\b/.test(normalized)) return "harlem jazz club";
+  if (/\bparal/.test(normalized) && /\b62\b/.test(normalized)) return "parallel 62";
+  if (/\brazzmatazz\b/.test(normalized)) return "razzmatazz";
+  if (/\bbikini\b/.test(normalized)) return "sala bikini";
+  if (/\bbarts\b/.test(normalized)) return "barts";
+  if (/\bsidecar\b/.test(normalized)) return "sidecar";
+  if (/\bpalau sant jordi\b/.test(normalized)) return "palau sant jordi";
+  if (/\bpalau de la mus/.test(normalized)) return "palau de la musica";
+
+  return normalized.replace(/^(sala|club|teatro|teatre|the)\s+/, "");
+}
+
 export function isTicketVariantListing(title: string): boolean {
   return TICKET_VARIANT_SUFFIX.test(title.replace(/\u00a0/g, " "));
 }
 
 export function eventDedupKey(event: NormalizedEvent): string {
-  return `${canonicalEventTitle(event.title)}|${normalizeForDedup(event.venue_name)}|${toTimeZoneDateString(event.start_datetime)}`;
+  return `${canonicalEventTitle(event.title)}|${canonicalVenueName(event.venue_name)}|${toTimeZoneDateString(event.start_datetime)}`;
 }
 
 function richness(event: NormalizedEvent): number {
